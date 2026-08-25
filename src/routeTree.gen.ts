@@ -16,6 +16,7 @@ import { Route as ContactosRouteImport } from './routes/contactos'
 import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAssociadosRouteImport } from './routes/admin.associados'
 import { Route as AdminNoticiasRouteImport } from './routes/admin.noticias'
 import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
 import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
@@ -55,6 +56,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAssociadosRoute = AdminAssociadosRouteImport.update({
+  id: '/associados',
+  path: '/associados',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminNoticiasRoute = AdminNoticiasRouteImport.update({
   id: '/noticias',
   path: '/noticias',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/contactos': typeof ContactosRoute
   '/noticias': typeof NoticiasRouteWithChildren
   '/sobre': typeof SobreRoute
+  '/admin/associados': typeof AdminAssociadosRoute
   '/admin/noticias': typeof AdminNoticiasRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/associados': typeof AssociadosRoute
   '/contactos': typeof ContactosRoute
   '/sobre': typeof SobreRoute
+  '/admin/associados': typeof AdminAssociadosRoute
   '/admin/noticias': typeof AdminNoticiasRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/contactos': typeof ContactosRoute
   '/noticias': typeof NoticiasRouteWithChildren
   '/sobre': typeof SobreRoute
+  '/admin/associados': typeof AdminAssociadosRoute
   '/admin/noticias': typeof AdminNoticiasRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/contactos'
     | '/noticias'
     | '/sobre'
+    | '/admin/associados'
     | '/admin/noticias'
     | '/noticias/$slug'
     | '/admin/'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/associados'
     | '/contactos'
     | '/sobre'
+    | '/admin/associados'
     | '/admin/noticias'
     | '/noticias/$slug'
     | '/admin'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/contactos'
     | '/noticias'
     | '/sobre'
+    | '/admin/associados'
     | '/admin/noticias'
     | '/noticias/$slug'
     | '/admin/'
@@ -203,6 +215,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/associados': {
+      id: '/admin/associados'
+      path: '/associados'
+      fullPath: '/admin/associados'
+      preLoaderRoute: typeof AdminAssociadosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/noticias': {
       id: '/admin/noticias'
       path: '/noticias'
@@ -228,11 +247,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAssociadosRoute: typeof AdminAssociadosRoute
   AdminNoticiasRoute: typeof AdminNoticiasRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAssociadosRoute: AdminAssociadosRoute,
   AdminNoticiasRoute: AdminNoticiasRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
