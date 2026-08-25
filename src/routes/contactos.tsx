@@ -148,13 +148,21 @@ function ContactosPage() {
                   <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
                 </div>
 
+                {erroEnvio ? (
+                  <p role="alert" className="text-sm font-semibold text-primary">
+                    {erroEnvio}
+                  </p>
+                ) : null}
+
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:shadow-lg hover:brightness-95"
+                  disabled={aEnviar}
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:shadow-lg hover:brightness-95 disabled:opacity-60"
                 >
-                  Enviar mensagem
+                  {aEnviar ? "A enviar…" : "Enviar mensagem"}
                   <Send className="h-4 w-4" aria-hidden="true" />
                 </button>
+
               </form>
             </div>
           </Reveal>
