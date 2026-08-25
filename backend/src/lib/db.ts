@@ -20,7 +20,7 @@ export const pool = mysql.createPool({
 
 export async function consultar<T = any>(
   sql: string,
-  valores: unknown[] = [],
+  valores: any[] = [],
 ): Promise<T[]> {
   const [linhas] = await pool.query(sql, valores);
   return linhas as T[];
@@ -28,7 +28,7 @@ export async function consultar<T = any>(
 
 export async function consultarUm<T = any>(
   sql: string,
-  valores: unknown[] = [],
+  valores: any[] = [],
 ): Promise<T | undefined> {
   const linhas = await consultar<T>(sql, valores);
   return linhas[0];
@@ -36,7 +36,7 @@ export async function consultarUm<T = any>(
 
 export async function executar(
   sql: string,
-  valores: unknown[] = [],
+  valores: any[] = [],
 ): Promise<mysql.ResultSetHeader> {
   const [resultado] = await pool.execute(sql, valores);
   return resultado as mysql.ResultSetHeader;

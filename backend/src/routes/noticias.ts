@@ -108,7 +108,7 @@ noticiasRouter.put("/:id", exigirAdmin, async (req, res, next) => {
 
     const dados = esquemaParcial.parse(req.body);
     const colunas: string[] = [];
-    const valores: unknown[] = [];
+    const valores: any[] = [];
 
     for (const [chave, valor] of Object.entries(dados)) {
       if (valor === undefined) continue;
