@@ -39,7 +39,10 @@ function ContactosPage() {
   const [erros, setErros] = useState<Partial<Record<Campos, string>>>({});
   const [enviado, setEnviado] = useState(false);
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const [aEnviar, setAEnviar] = useState(false);
+  const [erroEnvio, setErroEnvio] = useState("");
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const dados = Object.fromEntries(new FormData(form));
@@ -59,9 +62,25 @@ function ContactosPage() {
     }
 
     setErros({});
-    setEnviado(true);
-    form.reset();
+    setErroEnvio("");
+    setAEnviar(true);
+    try {
+      await enviarMensagem({
+        nome: resultado.data.nome,
+        empresa: resultado.data.empresa ?? "",
+        email: resultado.data.email,
+        assunto: resultado.data.assunto,
+        mensagem: resultado.data.mensagem,
+      });
+      setEnviado(true);
+      form.reset();
+    } catch (err) {
+      setErroEnvio(err instanceof Error ? err.message : "Não foi possível enviar a mensagem.");
+    } finally {
+      setAEnviar(false);
+    }
   }
+
 
   return (
     <>
