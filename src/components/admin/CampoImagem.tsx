@@ -7,7 +7,7 @@ type Props = {
   id?: string;
   valor: string;
   onChange: (url: string) => void;
-  ajuda?: string;
+  ajuda?: string | undefined;
 };
 
 /**
