@@ -1,10 +1,23 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { LayoutDashboard, Newspaper, Building2, Users, FileText, Mail, LogOut, Loader2 } from "lucide-react";
+import {
+  LayoutDashboard,
+  Newspaper,
+  Building2,
+  Users,
+  FileText,
+  Mail,
+  LogOut,
+  Loader2,
+  Images,
+  Settings,
+  ShieldCheck,
+  Activity,
+} from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { Logo } from "@/components/site/Logo";
-import { entrar, modoLocal, sair, sessaoActual } from "@/lib/cms";
+import { entrar, estadoServico, modoLocal, sair, sessaoActual } from "@/lib/cms";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -18,18 +31,44 @@ export const Route = createFileRoute("/admin")({
   }),
 });
 
-const menu = [
-  { to: "/admin", label: "Resumo", icon: LayoutDashboard, exact: true },
-  { to: "/admin/noticias", label: "Notícias", icon: Newspaper },
-  { to: "/admin/associados", label: "Associados", icon: Building2 },
-  { to: "/admin/orgaos", label: "Órgãos Sociais", icon: Users },
-  { to: "/admin/institucional", label: "Institucional", icon: FileText },
-  { to: "/admin/mensagens", label: "Mensagens", icon: Mail },
+const seccoes = [
+  {
+    titulo: "Geral",
+    itens: [{ to: "/admin", label: "Resumo", icon: LayoutDashboard, exact: true }],
+  },
+  {
+    titulo: "Conteúdos",
+    itens: [
+      { to: "/admin/noticias", label: "Notícias", icon: Newspaper },
+      { to: "/admin/associados", label: "Associados", icon: Building2 },
+      { to: "/admin/orgaos", label: "Órgãos Sociais", icon: Users },
+      { to: "/admin/institucional", label: "Institucional", icon: FileText },
+      { to: "/admin/ficheiros", label: "Ficheiros", icon: Images },
+    ],
+  },
+  {
+    titulo: "Comunicação",
+    itens: [{ to: "/admin/mensagens", label: "Mensagens", icon: Mail }],
+  },
+  {
+    titulo: "Plataforma",
+    itens: [
+      { to: "/admin/definicoes", label: "Definições", icon: Settings },
+      { to: "/admin/utilizadores", label: "Administradores", icon: ShieldCheck },
+      { to: "/admin/sistema", label: "Estado do sistema", icon: Activity },
+    ],
+  },
 ] as const;
 
 function AdminLayout() {
   const queryClient = useQueryClient();
   const { data: utilizador, isLoading } = useQuery({ queryKey: ["cms", "sessao"], queryFn: sessaoActual });
+  const saude = useQuery({
+    queryKey: ["cms", "saude"],
+    queryFn: estadoServico,
+    enabled: !modoLocal && Boolean(utilizador),
+    refetchInterval: 60_000,
+  });
 
   if (isLoading) {
     return (
@@ -41,29 +80,50 @@ function AdminLayout() {
 
   if (!utilizador) return <Login />;
 
+  const online = saude.data?.ok && saude.data.baseDados?.ok;
+
   return (
     <div className="flex min-h-screen flex-col bg-surface lg:flex-row">
-      <aside className="border-b border-border bg-card lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
+      <aside className="flex flex-col border-b border-border bg-card lg:min-h-screen lg:w-64 lg:border-b-0 lg:border-r">
         <div className="p-6">
           <Logo size="sm" showTagline={false} />
         </div>
-        <nav aria-label="Navegação do painel" className="flex flex-wrap gap-1 px-3 pb-4 lg:flex-col">
-          {menu.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              activeOptions={{ exact: "exact" in item ? item.exact : false }}
-              className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-graphite transition-colors hover:bg-surface hover:text-primary"
-              activeProps={{ className: "bg-surface text-primary" }}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
+        <nav aria-label="Navegação do painel" className="flex-1 space-y-5 px-3 pb-4">
+          {seccoes.map((seccao) => (
+            <div key={seccao.titulo}>
+              <p className="px-3 pb-1.5 text-[0.68rem] font-bold uppercase tracking-wider text-mid-grey">
+                {seccao.titulo}
+              </p>
+              <div className="flex flex-wrap gap-1 lg:flex-col">
+                {seccao.itens.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    activeOptions={{ exact: "exact" in item ? item.exact : false }}
+                    className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-graphite transition-colors hover:bg-surface hover:text-primary"
+                    activeProps={{ className: "bg-surface text-primary" }}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
-        <div className="border-t border-border p-4 lg:mt-auto">
+        <div className="border-t border-border p-4">
+          <Link
+            to="/admin/sistema"
+            className="mb-3 inline-flex items-center gap-2 text-xs font-semibold text-graphite hover:text-primary"
+          >
+            <span
+              className={`h-2 w-2 rounded-full ${modoLocal ? "bg-mid-grey" : online ? "bg-primary" : "bg-mid-grey"}`}
+              aria-hidden
+            />
+            {modoLocal ? "Modo demonstração" : online ? "Serviço operacional" : "Serviço indisponível"}
+          </Link>
           <p className="truncate text-xs font-light text-graphite">{utilizador.email}</p>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-2 flex flex-wrap gap-3">
             <Link to="/" className="text-xs font-semibold text-graphite hover:text-primary">
               Ver site
             </Link>
@@ -94,6 +154,7 @@ function AdminLayout() {
     </div>
   );
 }
+
 
 function Login() {
   const queryClient = useQueryClient();
