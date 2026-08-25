@@ -5,6 +5,7 @@ import { MapPin, Phone, Printer, Mail, Send, CheckCircle2 } from "lucide-react";
 import { PageHero, Section } from "@/components/site/Section";
 import { Reveal } from "@/components/site/Reveal";
 import { organizacao } from "@/data/institucional";
+import { enviarMensagem } from "@/lib/cms";
 
 export const Route = createFileRoute("/contactos")({
   component: ContactosPage,
