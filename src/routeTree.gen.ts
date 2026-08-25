@@ -18,6 +18,7 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAssociadosRouteImport } from './routes/admin.associados'
 import { Route as AdminDefinicoesRouteImport } from './routes/admin.definicoes'
+import { Route as AdminFicheirosRouteImport } from './routes/admin.ficheiros'
 import { Route as AdminInstitucionalRouteImport } from './routes/admin.institucional'
 import { Route as AdminMensagensRouteImport } from './routes/admin.mensagens'
 import { Route as AdminNoticiasRouteImport } from './routes/admin.noticias'
@@ -70,6 +71,11 @@ const AdminDefinicoesRoute = AdminDefinicoesRouteImport.update({
   path: '/definicoes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminFicheirosRoute = AdminFicheirosRouteImport.update({
+  id: '/ficheiros',
+  path: '/ficheiros',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInstitucionalRoute = AdminInstitucionalRouteImport.update({
   id: '/institucional',
   path: '/institucional',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/admin/associados': typeof AdminAssociadosRoute
   '/admin/definicoes': typeof AdminDefinicoesRoute
+  '/admin/ficheiros': typeof AdminFicheirosRoute
   '/admin/institucional': typeof AdminInstitucionalRoute
   '/admin/mensagens': typeof AdminMensagensRoute
   '/admin/noticias': typeof AdminNoticiasRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/admin/associados': typeof AdminAssociadosRoute
   '/admin/definicoes': typeof AdminDefinicoesRoute
+  '/admin/ficheiros': typeof AdminFicheirosRoute
   '/admin/institucional': typeof AdminInstitucionalRoute
   '/admin/mensagens': typeof AdminMensagensRoute
   '/admin/noticias': typeof AdminNoticiasRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/admin/associados': typeof AdminAssociadosRoute
   '/admin/definicoes': typeof AdminDefinicoesRoute
+  '/admin/ficheiros': typeof AdminFicheirosRoute
   '/admin/institucional': typeof AdminInstitucionalRoute
   '/admin/mensagens': typeof AdminMensagensRoute
   '/admin/noticias': typeof AdminNoticiasRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/associados'
     | '/admin/definicoes'
+    | '/admin/ficheiros'
     | '/admin/institucional'
     | '/admin/mensagens'
     | '/admin/noticias'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/associados'
     | '/admin/definicoes'
+    | '/admin/ficheiros'
     | '/admin/institucional'
     | '/admin/mensagens'
     | '/admin/noticias'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/associados'
     | '/admin/definicoes'
+    | '/admin/ficheiros'
     | '/admin/institucional'
     | '/admin/mensagens'
     | '/admin/noticias'
@@ -277,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDefinicoesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/ficheiros': {
+      id: '/admin/ficheiros'
+      path: '/ficheiros'
+      fullPath: '/admin/ficheiros'
+      preLoaderRoute: typeof AdminFicheirosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/institucional': {
       id: '/admin/institucional'
       path: '/institucional'
@@ -325,6 +344,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminAssociadosRoute: typeof AdminAssociadosRoute
   AdminDefinicoesRoute: typeof AdminDefinicoesRoute
+  AdminFicheirosRoute: typeof AdminFicheirosRoute
   AdminInstitucionalRoute: typeof AdminInstitucionalRoute
   AdminMensagensRoute: typeof AdminMensagensRoute
   AdminNoticiasRoute: typeof AdminNoticiasRoute
@@ -335,6 +355,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAssociadosRoute: AdminAssociadosRoute,
   AdminDefinicoesRoute: AdminDefinicoesRoute,
+  AdminFicheirosRoute: AdminFicheirosRoute,
   AdminInstitucionalRoute: AdminInstitucionalRoute,
   AdminMensagensRoute: AdminMensagensRoute,
   AdminNoticiasRoute: AdminNoticiasRoute,
