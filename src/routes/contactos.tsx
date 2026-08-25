@@ -5,6 +5,7 @@ import { MapPin, Phone, Printer, Mail, Send, CheckCircle2 } from "lucide-react";
 import { PageHero, Section } from "@/components/site/Section";
 import { Reveal } from "@/components/site/Reveal";
 import { organizacao } from "@/data/institucional";
+import { enviarMensagem } from "@/lib/cms";
 
 export const Route = createFileRoute("/contactos")({
   component: ContactosPage,
@@ -39,7 +40,10 @@ function ContactosPage() {
   const [erros, setErros] = useState<Partial<Record<Campos, string>>>({});
   const [enviado, setEnviado] = useState(false);
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const [aEnviar, setAEnviar] = useState(false);
+  const [erroEnvio, setErroEnvio] = useState("");
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const dados = Object.fromEntries(new FormData(form));
@@ -59,9 +63,25 @@ function ContactosPage() {
     }
 
     setErros({});
-    setEnviado(true);
-    form.reset();
+    setErroEnvio("");
+    setAEnviar(true);
+    try {
+      await enviarMensagem({
+        nome: resultado.data.nome,
+        empresa: resultado.data.empresa ?? "",
+        email: resultado.data.email,
+        assunto: resultado.data.assunto,
+        mensagem: resultado.data.mensagem,
+      });
+      setEnviado(true);
+      form.reset();
+    } catch (err) {
+      setErroEnvio(err instanceof Error ? err.message : "Não foi possível enviar a mensagem.");
+    } finally {
+      setAEnviar(false);
+    }
   }
+
 
   return (
     <>
@@ -128,13 +148,21 @@ function ContactosPage() {
                   <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
                 </div>
 
+                {erroEnvio ? (
+                  <p role="alert" className="text-sm font-semibold text-primary">
+                    {erroEnvio}
+                  </p>
+                ) : null}
+
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:shadow-lg hover:brightness-95"
+                  disabled={aEnviar}
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:shadow-lg hover:brightness-95 disabled:opacity-60"
                 >
-                  Enviar mensagem
+                  {aEnviar ? "A enviar…" : "Enviar mensagem"}
                   <Send className="h-4 w-4" aria-hidden="true" />
                 </button>
+
               </form>
             </div>
           </Reveal>
