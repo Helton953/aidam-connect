@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Pencil, Plus, Trash2, X, Loader2 } from "lucide-react";
+import { Pencil, Plus, Trash2, X, Loader2, Search } from "lucide-react";
 import { toast } from "sonner";
 import { actualizar, criar, listar, remover, type RecursoCms, type RegistoPorRecurso } from "@/lib/cms";
 import { CampoImagem } from "@/components/admin/CampoImagem";
@@ -37,7 +37,9 @@ type Props<R extends RecursoCms> = {
 };
 
 const inputCls =
-  "w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary";
+  "w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:bg-background";
+
+const rotuloCls = "mb-1.5 block text-[0.68rem] font-bold uppercase tracking-wider text-graphite";
 
 export function Crud<R extends RecursoCms>({
   recurso,
@@ -55,6 +57,8 @@ export function Crud<R extends RecursoCms>({
 
   const [editar, setEditar] = useState<Partial<Registo> | null>(null);
   const [pesquisa, setPesquisa] = useState("");
+
+  const idActivo = editar ? (editar as { id?: string }).id : undefined;
 
   const guardar = useMutation({
     mutationFn: async (registo: Partial<Registo>) => {
@@ -74,163 +78,207 @@ export function Crud<R extends RecursoCms>({
     mutationFn: (id: string) => remover(recurso, id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: chave });
+      setEditar(null);
       toast.success("Registo eliminado.");
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const registos = useMemo(() => (data ?? []) as Registo[], [data]);
+
   const lista = useMemo(() => {
-    const registos = (data ?? []) as Registo[];
     const termo = pesquisa.trim().toLowerCase();
     if (!termo) return registos;
     return registos.filter((r) =>
       Object.values(r as Record<string, unknown>).some((v) => String(v).toLowerCase().includes(termo)),
     );
-  }, [data, pesquisa]);
+  }, [registos, pesquisa]);
 
   return (
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">{titulo}</h1>
-          <p className="mt-1 text-sm font-light text-graphite">{descricao}</p>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">{titulo}</h1>
+          <p className="mt-1 max-w-2xl text-sm font-light text-graphite">{descricao}</p>
         </div>
-        <button
-          type="button"
-          onClick={() => setEditar({ ...(vazio as object) } as Partial<Registo>)}
-          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:brightness-95"
-        >
-          <Plus className="h-4 w-4" /> {rotuloNovo}
-        </button>
+        <div className="flex items-center gap-3">
+          <span className="rounded-full bg-card px-3 py-1 text-xs font-semibold text-graphite ring-1 ring-border">
+            {registos.length} {registos.length === 1 ? "registo" : "registos"}
+          </span>
+          <button
+            type="button"
+            onClick={() => setEditar({ ...(vazio as object) } as Partial<Registo>)}
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:brightness-95"
+          >
+            <Plus className="h-4 w-4" /> {rotuloNovo}
+          </button>
+        </div>
       </div>
 
-      <input
-        type="search"
-        value={pesquisa}
-        onChange={(e) => setPesquisa(e.target.value)}
-        placeholder="Pesquisar…"
-        aria-label="Pesquisar registos"
-        className={cn(inputCls, "mt-6 max-w-sm")}
-      />
+      <div className="mt-6 flex flex-col items-start gap-6 xl:flex-row">
+        {/* Lista */}
+        <div className="w-full min-w-0 flex-1 overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3.5">
+            <h2 className="text-sm font-bold text-foreground">Registos</h2>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-mid-grey" />
+              <input
+                type="search"
+                value={pesquisa}
+                onChange={(e) => setPesquisa(e.target.value)}
+                placeholder="Pesquisar…"
+                aria-label="Pesquisar registos"
+                className={cn(inputCls, "w-56 pl-9")}
+              />
+            </div>
+          </div>
 
-      <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card shadow-[var(--shadow-card)]">
-        <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="border-b border-border bg-surface">
-            <tr>
-              {colunas.map((c) => (
-                <th key={c} className="px-4 py-3 font-semibold text-graphite">
-                  {campos.find((f) => f.nome === c)?.rotulo ?? c}
-                </th>
-              ))}
-              <th className="px-4 py-3 text-right font-semibold text-graphite">Acções</th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <tr>
-                <td colSpan={colunas.length + 1} className="px-4 py-10 text-center text-graphite">
-                  A carregar…
-                </td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td colSpan={colunas.length + 1} className="px-4 py-10 text-center text-primary">
-                  {(error as Error).message}
-                </td>
-              </tr>
-            ) : lista.length === 0 ? (
-              <tr>
-                <td colSpan={colunas.length + 1} className="px-4 py-10 text-center text-graphite">
-                  Sem registos.
-                </td>
-              </tr>
-            ) : (
-              lista.map((registo) => {
-                const id = (registo as { id: string }).id;
-                return (
-                  <tr key={id} className="border-b border-border/60 last:border-0">
-                    {colunas.map((c) => {
-                      const valor = (registo as Record<string, unknown>)[c];
-                      const eImagem = campos.find((f) => f.nome === c)?.tipo === "imagem";
-                      if (eImagem) {
-                        return (
-                          <td key={c} className="px-4 py-3">
-                            {valor ? (
-                              <img
-                                src={String(valor)}
-                                alt=""
-                                className="h-10 w-16 rounded border border-border object-cover"
-                              />
-                            ) : (
-                              <span className="text-xs text-graphite">—</span>
-                            )}
-                          </td>
-                        );
-                      }
-                      return (
-                        <td key={c} className="max-w-[22rem] truncate px-4 py-3 text-foreground">
-                          {typeof valor === "boolean" ? (
-                            <span
-                              className={cn(
-                                "inline-flex rounded-full px-2 py-0.5 text-xs font-semibold",
-                                valor ? "bg-primary/10 text-primary" : "bg-surface text-graphite",
-                              )}
-                            >
-                              {valor ? "Sim" : "Não"}
-                            </span>
-                          ) : (
-                            String(valor ?? "")
-                          )}
-                        </td>
-                      );
-                    })}
-                    <td className="whitespace-nowrap px-4 py-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() => setEditar(registo)}
-                        aria-label="Editar"
-                        className="mr-1 rounded-md p-2 text-graphite transition-colors hover:bg-surface hover:text-primary"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (window.confirm("Eliminar este registo?")) apagar.mutate(id);
-                        }}
-                        aria-label="Eliminar"
-                        className="rounded-md p-2 text-graphite transition-colors hover:bg-surface hover:text-primary"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] text-left text-sm">
+              <thead className="bg-surface text-[0.68rem] uppercase tracking-wider text-graphite">
+                <tr>
+                  {colunas.map((c) => (
+                    <th key={c} className="px-5 py-3 font-bold">
+                      {campos.find((f) => f.nome === c)?.rotulo ?? c}
+                    </th>
+                  ))}
+                  <th className="px-5 py-3 text-right font-bold">Acções</th>
+                </tr>
+              </thead>
+              <tbody>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={colunas.length + 1} className="px-5 py-12 text-center text-graphite">
+                      A carregar…
                     </td>
                   </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+                ) : error ? (
+                  <tr>
+                    <td colSpan={colunas.length + 1} className="px-5 py-12 text-center text-primary">
+                      {(error as Error).message}
+                    </td>
+                  </tr>
+                ) : lista.length === 0 ? (
+                  <tr>
+                    <td colSpan={colunas.length + 1} className="px-5 py-12 text-center text-graphite">
+                      Sem registos.
+                    </td>
+                  </tr>
+                ) : (
+                  lista.map((registo) => {
+                    const id = (registo as { id: string }).id;
+                    const activo = id === idActivo;
+                    return (
+                      <tr
+                        key={id}
+                        onClick={() => setEditar(registo)}
+                        className={cn(
+                          "cursor-pointer border-b border-border/60 transition-colors last:border-0 hover:bg-surface",
+                          activo && "bg-primary/5",
+                        )}
+                      >
+                        {colunas.map((c, i) => {
+                          const valor = (registo as Record<string, unknown>)[c];
+                          const eImagem = campos.find((f) => f.nome === c)?.tipo === "imagem";
+                          if (eImagem) {
+                            return (
+                              <td key={c} className={cn("px-5 py-3", activo && i === 0 && "border-l-2 border-primary")}>
+                                {valor ? (
+                                  <img
+                                    src={String(valor)}
+                                    alt=""
+                                    className="h-10 w-16 rounded border border-border object-cover"
+                                  />
+                                ) : (
+                                  <span className="text-xs text-graphite">—</span>
+                                )}
+                              </td>
+                            );
+                          }
+                          return (
+                            <td
+                              key={c}
+                              className={cn(
+                                "max-w-[20rem] truncate px-5 py-3 text-foreground",
+                                i === 0 && "font-medium",
+                                activo && i === 0 && "border-l-2 border-primary",
+                              )}
+                            >
+                              {typeof valor === "boolean" ? (
+                                <span
+                                  className={cn(
+                                    "inline-flex rounded-full px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide",
+                                    valor ? "bg-primary/10 text-primary" : "bg-surface text-graphite",
+                                  )}
+                                >
+                                  {valor ? "Sim" : "Não"}
+                                </span>
+                              ) : (
+                                String(valor ?? "")
+                              )}
+                            </td>
+                          );
+                        })}
+                        <td className="whitespace-nowrap px-5 py-3 text-right">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditar(registo);
+                            }}
+                            aria-label="Editar"
+                            className="mr-1 rounded-md p-2 text-graphite transition-colors hover:bg-surface hover:text-primary"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (window.confirm("Eliminar este registo?")) apagar.mutate(id);
+                            }}
+                            aria-label="Eliminar"
+                            className="rounded-md p-2 text-graphite transition-colors hover:bg-surface hover:text-primary"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-      {editar ? (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-soft-black/50 p-4 py-10">
-          <div className="w-full max-w-3xl rounded-xl border border-border bg-card p-6 shadow-lg">
-            <div className="flex items-start justify-between gap-4">
-              <h2 className="text-lg font-bold text-foreground">
-                {(editar as { id?: string }).id ? "Editar registo" : rotuloNovo}
-              </h2>
+        {/* Painel lateral de edição */}
+        {editar ? (
+          <aside className="w-full shrink-0 overflow-hidden rounded-xl border border-border bg-card shadow-lg xl:sticky xl:top-6 xl:w-[26rem]">
+            <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4">
+              <div>
+                <h2 className="text-base font-bold text-foreground">
+                  {idActivo ? "Editar registo" : rotuloNovo}
+                </h2>
+                {idActivo ? (
+                  <p className="mt-0.5 truncate text-xs font-light text-graphite">ID: {idActivo}</p>
+                ) : (
+                  <p className="mt-0.5 text-xs font-light text-graphite">Preencha os campos e guarde.</p>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => setEditar(null)}
-                aria-label="Fechar"
-                className="rounded-md p-1 text-graphite hover:text-primary"
+                aria-label="Fechar painel de edição"
+                className="rounded-md p-1 text-graphite transition-colors hover:text-primary"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             <form
-              className="mt-6 grid gap-4 sm:grid-cols-2"
+              id="formulario-registo"
+              className="max-h-[calc(100vh-16rem)] space-y-4 overflow-y-auto px-5 py-5"
               onSubmit={(e) => {
                 e.preventDefault();
                 guardar.mutate(editar);
@@ -238,14 +286,15 @@ export function Crud<R extends RecursoCms>({
             >
               {campos.map((campo) => {
                 const valor = (editar as Record<string, unknown>)[campo.nome];
-                const definir = (v: unknown) => setEditar((prev: Partial<Registo> | null) => ({ ...(prev as object), [campo.nome]: v }) as Partial<Registo>);
+                const definir = (v: unknown) =>
+                  setEditar(
+                    (prev: Partial<Registo> | null) =>
+                      ({ ...(prev as object), [campo.nome]: v }) as Partial<Registo>,
+                  );
                 const id = `campo-${campo.nome}`;
                 return (
-                  <div
-                    key={campo.nome}
-                    className={cn(campo.largura === "meia" ? "sm:col-span-1" : "sm:col-span-2")}
-                  >
-                    <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-foreground">
+                  <div key={campo.nome}>
+                    <label htmlFor={id} className={rotuloCls}>
                       {campo.rotulo}
                     </label>
                     {campo.tipo === "imagem" ? (
@@ -262,7 +311,7 @@ export function Crud<R extends RecursoCms>({
                         required={campo.obrigatorio}
                         value={String(valor ?? "")}
                         onChange={(e) => definir(e.target.value)}
-                        className={inputCls}
+                        className={cn(inputCls, "resize-y")}
                       />
                     ) : campo.tipo === "seleccao" ? (
                       <select
@@ -278,16 +327,32 @@ export function Crud<R extends RecursoCms>({
                         ))}
                       </select>
                     ) : campo.tipo === "booleano" ? (
-                      <label className="inline-flex items-center gap-2 text-sm text-graphite">
-                        <input
-                          id={id}
-                          type="checkbox"
-                          checked={Boolean(valor)}
-                          onChange={(e) => definir(e.target.checked)}
-                          className="h-4 w-4 accent-[var(--color-primary)]"
-                        />
-                        Activo
-                      </label>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => definir(true)}
+                          className={cn(
+                            "flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-colors",
+                            valor
+                              ? "bg-soft-black text-background"
+                              : "border border-border text-graphite hover:bg-surface",
+                          )}
+                        >
+                          Activo
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => definir(false)}
+                          className={cn(
+                            "flex-1 rounded-lg px-3 py-2 text-xs font-bold transition-colors",
+                            !valor
+                              ? "bg-soft-black text-background"
+                              : "border border-border text-graphite hover:bg-surface",
+                          )}
+                        >
+                          Inactivo
+                        </button>
+                      </div>
                     ) : (
                       <input
                         id={id}
@@ -308,32 +373,47 @@ export function Crud<R extends RecursoCms>({
                         className={inputCls}
                       />
                     )}
-                    {campo.ajuda ? <p className="mt-1 text-xs font-light text-graphite">{campo.ajuda}</p> : null}
+                    {campo.ajuda && campo.tipo !== "imagem" ? (
+                      <p className="mt-1 text-xs font-light text-graphite">{campo.ajuda}</p>
+                    ) : null}
                   </div>
                 );
               })}
+            </form>
 
-              <div className="sm:col-span-2 mt-2 flex justify-end gap-3">
+            <div className="flex gap-3 border-t border-border bg-surface px-5 py-4">
+              <button
+                type="submit"
+                form="formulario-registo"
+                disabled={guardar.isPending}
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground transition-all hover:brightness-95 disabled:opacity-60"
+              >
+                {guardar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                Guardar alterações
+              </button>
+              {idActivo ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm("Eliminar este registo?")) apagar.mutate(idActivo);
+                  }}
+                  className="rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-bold text-graphite transition-colors hover:text-primary"
+                >
+                  Eliminar
+                </button>
+              ) : (
                 <button
                   type="button"
                   onClick={() => setEditar(null)}
-                  className="rounded-md border border-border px-4 py-2 text-sm font-semibold text-graphite transition-colors hover:bg-surface"
+                  className="rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-bold text-graphite transition-colors hover:text-primary"
                 >
                   Cancelar
                 </button>
-                <button
-                  type="submit"
-                  disabled={guardar.isPending}
-                  className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-all hover:brightness-95 disabled:opacity-60"
-                >
-                  {guardar.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                  Guardar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
+              )}
+            </div>
+          </aside>
+        ) : null}
+      </div>
     </div>
   );
 }
