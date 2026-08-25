@@ -202,7 +202,7 @@ export function Crud<R extends RecursoCms>({
             >
               {campos.map((campo) => {
                 const valor = (editar as Record<string, unknown>)[campo.nome];
-                const definir = (v: unknown) => setEditar((prev) => ({ ...(prev as object), [campo.nome]: v }) as Partial<Registo>);
+                const definir = (v: unknown) => setEditar((prev: Partial<Registo> | null) => ({ ...(prev as object), [campo.nome]: v }) as Partial<Registo>);
                 const id = `campo-${campo.nome}`;
                 return (
                   <div

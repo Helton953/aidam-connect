@@ -279,4 +279,4 @@ export function gerarSlug(titulo: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export type { AssociadoCms, InstitucionalCms, MembroCms, MensagemCms, NoticiaCms, UtilizadorCms };
+export type { RecursoCms, RegistoPorRecurso, AssociadoCms, InstitucionalCms, MembroCms, MensagemCms, NoticiaCms, UtilizadorCms };
