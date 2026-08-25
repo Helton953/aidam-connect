@@ -45,7 +45,7 @@ function ContactosPage() {
     const dados = Object.fromEntries(new FormData(form));
 
     // Honeypot anti-spam
-    if (typeof dados.website === "string" && dados.website.length > 0) return;
+    if (typeof dados["website"] === "string" && dados["website"].length > 0) return;
 
     const resultado = esquema.safeParse(dados);
     if (!resultado.success) {
@@ -207,7 +207,7 @@ function Campo({
   id: string;
   label: string;
   type?: string;
-  erro?: string;
+  erro?: string | undefined;
   required?: boolean;
 }) {
   return (
