@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AssociadosRouteImport } from './routes/associados'
 import { Route as ContactosRouteImport } from './routes/contactos'
 import { Route as NoticiasRouteImport } from './routes/noticias'
@@ -20,6 +21,11 @@ import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssociadosRoute = AssociadosRouteImport.update({
@@ -55,6 +61,7 @@ const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/associados': typeof AssociadosRoute
   '/contactos': typeof ContactosRoute
   '/noticias': typeof NoticiasRouteWithChildren
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/associados': typeof AssociadosRoute
   '/contactos': typeof ContactosRoute
   '/sobre': typeof SobreRoute
@@ -73,6 +81,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/associados': typeof AssociadosRoute
   '/contactos': typeof ContactosRoute
   '/noticias': typeof NoticiasRouteWithChildren
@@ -84,6 +93,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/associados'
     | '/contactos'
     | '/noticias'
@@ -93,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/associados'
     | '/contactos'
     | '/sobre'
@@ -101,6 +112,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/associados'
     | '/contactos'
     | '/noticias'
@@ -111,6 +123,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   AssociadosRoute: typeof AssociadosRoute
   ContactosRoute: typeof ContactosRoute
   NoticiasRoute: typeof NoticiasRouteWithChildren
@@ -124,6 +137,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/associados': {
@@ -187,6 +207,7 @@ const NoticiasRouteWithChildren = NoticiasRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   AssociadosRoute: AssociadosRoute,
   ContactosRoute: ContactosRoute,
   NoticiasRoute: NoticiasRouteWithChildren,
