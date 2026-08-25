@@ -15,6 +15,7 @@ import { Route as AssociadosRouteImport } from './routes/associados'
 import { Route as ContactosRouteImport } from './routes/contactos'
 import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
 import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 
@@ -48,6 +49,11 @@ const SobreRoute = SobreRouteImport.update({
   path: '/sobre',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const NoticiasIndexRoute = NoticiasIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,32 +67,34 @@ const NoticiasSlugRoute = NoticiasSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/associados': typeof AssociadosRoute
   '/contactos': typeof ContactosRoute
   '/noticias': typeof NoticiasRouteWithChildren
   '/sobre': typeof SobreRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/noticias/': typeof NoticiasIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/associados': typeof AssociadosRoute
   '/contactos': typeof ContactosRoute
   '/sobre': typeof SobreRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/noticias': typeof NoticiasIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/associados': typeof AssociadosRoute
   '/contactos': typeof ContactosRoute
   '/noticias': typeof NoticiasRouteWithChildren
   '/sobre': typeof SobreRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/noticias/': typeof NoticiasIndexRoute
 }
 export interface FileRouteTypes {
@@ -99,15 +107,16 @@ export interface FileRouteTypes {
     | '/noticias'
     | '/sobre'
     | '/noticias/$slug'
+    | '/admin/'
     | '/noticias/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/associados'
     | '/contactos'
     | '/sobre'
     | '/noticias/$slug'
+    | '/admin'
     | '/noticias'
   id:
     | '__root__'
@@ -118,12 +127,13 @@ export interface FileRouteTypes {
     | '/noticias'
     | '/sobre'
     | '/noticias/$slug'
+    | '/admin/'
     | '/noticias/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AssociadosRoute: typeof AssociadosRoute
   ContactosRoute: typeof ContactosRoute
   NoticiasRoute: typeof NoticiasRouteWithChildren
@@ -174,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SobreRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/noticias/': {
       id: '/noticias/'
       path: '/'
@@ -191,6 +208,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface NoticiasRouteChildren {
   NoticiasSlugRoute: typeof NoticiasSlugRoute
   NoticiasIndexRoute: typeof NoticiasIndexRoute
@@ -207,7 +234,7 @@ const NoticiasRouteWithChildren = NoticiasRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AssociadosRoute: AssociadosRoute,
   ContactosRoute: ContactosRoute,
   NoticiasRoute: NoticiasRouteWithChildren,
