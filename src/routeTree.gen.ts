@@ -18,6 +18,7 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAssociadosRouteImport } from './routes/admin.associados'
 import { Route as AdminInstitucionalRouteImport } from './routes/admin.institucional'
+import { Route as AdminMensagensRouteImport } from './routes/admin.mensagens'
 import { Route as AdminNoticiasRouteImport } from './routes/admin.noticias'
 import { Route as AdminOrgaosRouteImport } from './routes/admin.orgaos'
 import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
@@ -68,6 +69,11 @@ const AdminInstitucionalRoute = AdminInstitucionalRouteImport.update({
   path: '/institucional',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMensagensRoute = AdminMensagensRouteImport.update({
+  id: '/mensagens',
+  path: '/mensagens',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminNoticiasRoute = AdminNoticiasRouteImport.update({
   id: '/noticias',
   path: '/noticias',
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/sobre': typeof SobreRoute
   '/admin/associados': typeof AdminAssociadosRoute
   '/admin/institucional': typeof AdminInstitucionalRoute
+  '/admin/mensagens': typeof AdminMensagensRoute
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/orgaos': typeof AdminOrgaosRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/admin/associados': typeof AdminAssociadosRoute
   '/admin/institucional': typeof AdminInstitucionalRoute
+  '/admin/mensagens': typeof AdminMensagensRoute
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/orgaos': typeof AdminOrgaosRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/sobre': typeof SobreRoute
   '/admin/associados': typeof AdminAssociadosRoute
   '/admin/institucional': typeof AdminInstitucionalRoute
+  '/admin/mensagens': typeof AdminMensagensRoute
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/orgaos': typeof AdminOrgaosRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/associados'
     | '/admin/institucional'
+    | '/admin/mensagens'
     | '/admin/noticias'
     | '/admin/orgaos'
     | '/noticias/$slug'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/associados'
     | '/admin/institucional'
+    | '/admin/mensagens'
     | '/admin/noticias'
     | '/admin/orgaos'
     | '/noticias/$slug'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/admin/associados'
     | '/admin/institucional'
+    | '/admin/mensagens'
     | '/admin/noticias'
     | '/admin/orgaos'
     | '/noticias/$slug'
@@ -253,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInstitucionalRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/mensagens': {
+      id: '/admin/mensagens'
+      path: '/mensagens'
+      fullPath: '/admin/mensagens'
+      preLoaderRoute: typeof AdminMensagensRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/noticias': {
       id: '/admin/noticias'
       path: '/noticias'
@@ -287,6 +306,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminAssociadosRoute: typeof AdminAssociadosRoute
   AdminInstitucionalRoute: typeof AdminInstitucionalRoute
+  AdminMensagensRoute: typeof AdminMensagensRoute
   AdminNoticiasRoute: typeof AdminNoticiasRoute
   AdminOrgaosRoute: typeof AdminOrgaosRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -295,6 +315,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAssociadosRoute: AdminAssociadosRoute,
   AdminInstitucionalRoute: AdminInstitucionalRoute,
+  AdminMensagensRoute: AdminMensagensRoute,
   AdminNoticiasRoute: AdminNoticiasRoute,
   AdminOrgaosRoute: AdminOrgaosRoute,
   AdminIndexRoute: AdminIndexRoute,
