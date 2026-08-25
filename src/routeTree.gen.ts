@@ -17,10 +17,14 @@ import { Route as NoticiasRouteImport } from './routes/noticias'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAssociadosRouteImport } from './routes/admin.associados'
+import { Route as AdminDefinicoesRouteImport } from './routes/admin.definicoes'
+import { Route as AdminFicheirosRouteImport } from './routes/admin.ficheiros'
 import { Route as AdminInstitucionalRouteImport } from './routes/admin.institucional'
 import { Route as AdminMensagensRouteImport } from './routes/admin.mensagens'
 import { Route as AdminNoticiasRouteImport } from './routes/admin.noticias'
 import { Route as AdminOrgaosRouteImport } from './routes/admin.orgaos'
+import { Route as AdminSistemaRouteImport } from './routes/admin.sistema'
+import { Route as AdminUtilizadoresRouteImport } from './routes/admin.utilizadores'
 import { Route as NoticiasIndexRouteImport } from './routes/noticias.index'
 import { Route as NoticiasSlugRouteImport } from './routes/noticias.$slug'
 
@@ -64,6 +68,16 @@ const AdminAssociadosRoute = AdminAssociadosRouteImport.update({
   path: '/associados',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDefinicoesRoute = AdminDefinicoesRouteImport.update({
+  id: '/definicoes',
+  path: '/definicoes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFicheirosRoute = AdminFicheirosRouteImport.update({
+  id: '/ficheiros',
+  path: '/ficheiros',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInstitucionalRoute = AdminInstitucionalRouteImport.update({
   id: '/institucional',
   path: '/institucional',
@@ -82,6 +96,16 @@ const AdminNoticiasRoute = AdminNoticiasRouteImport.update({
 const AdminOrgaosRoute = AdminOrgaosRouteImport.update({
   id: '/orgaos',
   path: '/orgaos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSistemaRoute = AdminSistemaRouteImport.update({
+  id: '/sistema',
+  path: '/sistema',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUtilizadoresRoute = AdminUtilizadoresRouteImport.update({
+  id: '/utilizadores',
+  path: '/utilizadores',
   getParentRoute: () => AdminRoute,
 } as any)
 const NoticiasIndexRoute = NoticiasIndexRouteImport.update({
@@ -103,10 +127,14 @@ export interface FileRoutesByFullPath {
   '/noticias': typeof NoticiasRouteWithChildren
   '/sobre': typeof SobreRoute
   '/admin/associados': typeof AdminAssociadosRoute
+  '/admin/definicoes': typeof AdminDefinicoesRoute
+  '/admin/ficheiros': typeof AdminFicheirosRoute
   '/admin/institucional': typeof AdminInstitucionalRoute
   '/admin/mensagens': typeof AdminMensagensRoute
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/orgaos': typeof AdminOrgaosRoute
+  '/admin/sistema': typeof AdminSistemaRoute
+  '/admin/utilizadores': typeof AdminUtilizadoresRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/noticias/': typeof NoticiasIndexRoute
@@ -117,10 +145,14 @@ export interface FileRoutesByTo {
   '/contactos': typeof ContactosRoute
   '/sobre': typeof SobreRoute
   '/admin/associados': typeof AdminAssociadosRoute
+  '/admin/definicoes': typeof AdminDefinicoesRoute
+  '/admin/ficheiros': typeof AdminFicheirosRoute
   '/admin/institucional': typeof AdminInstitucionalRoute
   '/admin/mensagens': typeof AdminMensagensRoute
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/orgaos': typeof AdminOrgaosRoute
+  '/admin/sistema': typeof AdminSistemaRoute
+  '/admin/utilizadores': typeof AdminUtilizadoresRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
   '/admin': typeof AdminIndexRoute
   '/noticias': typeof NoticiasIndexRoute
@@ -134,10 +166,14 @@ export interface FileRoutesById {
   '/noticias': typeof NoticiasRouteWithChildren
   '/sobre': typeof SobreRoute
   '/admin/associados': typeof AdminAssociadosRoute
+  '/admin/definicoes': typeof AdminDefinicoesRoute
+  '/admin/ficheiros': typeof AdminFicheirosRoute
   '/admin/institucional': typeof AdminInstitucionalRoute
   '/admin/mensagens': typeof AdminMensagensRoute
   '/admin/noticias': typeof AdminNoticiasRoute
   '/admin/orgaos': typeof AdminOrgaosRoute
+  '/admin/sistema': typeof AdminSistemaRoute
+  '/admin/utilizadores': typeof AdminUtilizadoresRoute
   '/noticias/$slug': typeof NoticiasSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/noticias/': typeof NoticiasIndexRoute
@@ -152,10 +188,14 @@ export interface FileRouteTypes {
     | '/noticias'
     | '/sobre'
     | '/admin/associados'
+    | '/admin/definicoes'
+    | '/admin/ficheiros'
     | '/admin/institucional'
     | '/admin/mensagens'
     | '/admin/noticias'
     | '/admin/orgaos'
+    | '/admin/sistema'
+    | '/admin/utilizadores'
     | '/noticias/$slug'
     | '/admin/'
     | '/noticias/'
@@ -166,10 +206,14 @@ export interface FileRouteTypes {
     | '/contactos'
     | '/sobre'
     | '/admin/associados'
+    | '/admin/definicoes'
+    | '/admin/ficheiros'
     | '/admin/institucional'
     | '/admin/mensagens'
     | '/admin/noticias'
     | '/admin/orgaos'
+    | '/admin/sistema'
+    | '/admin/utilizadores'
     | '/noticias/$slug'
     | '/admin'
     | '/noticias'
@@ -182,10 +226,14 @@ export interface FileRouteTypes {
     | '/noticias'
     | '/sobre'
     | '/admin/associados'
+    | '/admin/definicoes'
+    | '/admin/ficheiros'
     | '/admin/institucional'
     | '/admin/mensagens'
     | '/admin/noticias'
     | '/admin/orgaos'
+    | '/admin/sistema'
+    | '/admin/utilizadores'
     | '/noticias/$slug'
     | '/admin/'
     | '/noticias/'
@@ -258,6 +306,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAssociadosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/definicoes': {
+      id: '/admin/definicoes'
+      path: '/definicoes'
+      fullPath: '/admin/definicoes'
+      preLoaderRoute: typeof AdminDefinicoesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/ficheiros': {
+      id: '/admin/ficheiros'
+      path: '/ficheiros'
+      fullPath: '/admin/ficheiros'
+      preLoaderRoute: typeof AdminFicheirosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/institucional': {
       id: '/admin/institucional'
       path: '/institucional'
@@ -286,6 +348,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrgaosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/sistema': {
+      id: '/admin/sistema'
+      path: '/sistema'
+      fullPath: '/admin/sistema'
+      preLoaderRoute: typeof AdminSistemaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/utilizadores': {
+      id: '/admin/utilizadores'
+      path: '/utilizadores'
+      fullPath: '/admin/utilizadores'
+      preLoaderRoute: typeof AdminUtilizadoresRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/noticias/': {
       id: '/noticias/'
       path: '/'
@@ -305,19 +381,27 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAssociadosRoute: typeof AdminAssociadosRoute
+  AdminDefinicoesRoute: typeof AdminDefinicoesRoute
+  AdminFicheirosRoute: typeof AdminFicheirosRoute
   AdminInstitucionalRoute: typeof AdminInstitucionalRoute
   AdminMensagensRoute: typeof AdminMensagensRoute
   AdminNoticiasRoute: typeof AdminNoticiasRoute
   AdminOrgaosRoute: typeof AdminOrgaosRoute
+  AdminSistemaRoute: typeof AdminSistemaRoute
+  AdminUtilizadoresRoute: typeof AdminUtilizadoresRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAssociadosRoute: AdminAssociadosRoute,
+  AdminDefinicoesRoute: AdminDefinicoesRoute,
+  AdminFicheirosRoute: AdminFicheirosRoute,
   AdminInstitucionalRoute: AdminInstitucionalRoute,
   AdminMensagensRoute: AdminMensagensRoute,
   AdminNoticiasRoute: AdminNoticiasRoute,
   AdminOrgaosRoute: AdminOrgaosRoute,
+  AdminSistemaRoute: AdminSistemaRoute,
+  AdminUtilizadoresRoute: AdminUtilizadoresRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

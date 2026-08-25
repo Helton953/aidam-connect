@@ -3,9 +3,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pencil, Plus, Trash2, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { actualizar, criar, listar, remover, type RecursoCms, type RegistoPorRecurso } from "@/lib/cms";
+import { CampoImagem } from "@/components/admin/CampoImagem";
 import { cn } from "@/lib/utils";
 
-export type CampoTipo = "texto" | "area" | "numero" | "data" | "seleccao" | "booleano";
+export type CampoTipo =
+  | "texto"
+  | "area"
+  | "numero"
+  | "data"
+  | "seleccao"
+  | "booleano"
+  | "imagem"
+  | "url";
 
 export type Campo<T> = {
   nome: keyof T & string;
@@ -142,9 +151,36 @@ export function Crud<R extends RecursoCms>({
                   <tr key={id} className="border-b border-border/60 last:border-0">
                     {colunas.map((c) => {
                       const valor = (registo as Record<string, unknown>)[c];
+                      const eImagem = campos.find((f) => f.nome === c)?.tipo === "imagem";
+                      if (eImagem) {
+                        return (
+                          <td key={c} className="px-4 py-3">
+                            {valor ? (
+                              <img
+                                src={String(valor)}
+                                alt=""
+                                className="h-10 w-16 rounded border border-border object-cover"
+                              />
+                            ) : (
+                              <span className="text-xs text-graphite">—</span>
+                            )}
+                          </td>
+                        );
+                      }
                       return (
                         <td key={c} className="max-w-[22rem] truncate px-4 py-3 text-foreground">
-                          {typeof valor === "boolean" ? (valor ? "Sim" : "Não") : String(valor ?? "")}
+                          {typeof valor === "boolean" ? (
+                            <span
+                              className={cn(
+                                "inline-flex rounded-full px-2 py-0.5 text-xs font-semibold",
+                                valor ? "bg-primary/10 text-primary" : "bg-surface text-graphite",
+                              )}
+                            >
+                              {valor ? "Sim" : "Não"}
+                            </span>
+                          ) : (
+                            String(valor ?? "")
+                          )}
                         </td>
                       );
                     })}
@@ -212,7 +248,14 @@ export function Crud<R extends RecursoCms>({
                     <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-foreground">
                       {campo.rotulo}
                     </label>
-                    {campo.tipo === "area" ? (
+                    {campo.tipo === "imagem" ? (
+                      <CampoImagem
+                        id={id}
+                        valor={String(valor ?? "")}
+                        ajuda={campo.ajuda}
+                        onChange={(url) => definir(url)}
+                      />
+                    ) : campo.tipo === "area" ? (
                       <textarea
                         id={id}
                         rows={6}
@@ -248,7 +291,15 @@ export function Crud<R extends RecursoCms>({
                     ) : (
                       <input
                         id={id}
-                        type={campo.tipo === "numero" ? "number" : campo.tipo === "data" ? "date" : "text"}
+                        type={
+                          campo.tipo === "numero"
+                            ? "number"
+                            : campo.tipo === "data"
+                              ? "date"
+                              : campo.tipo === "url"
+                                ? "url"
+                                : "text"
+                        }
                         required={campo.obrigatorio}
                         value={String(valor ?? "")}
                         onChange={(e) =>

@@ -1,27 +1,91 @@
 import nodemailer, { type Transporter } from "nodemailer";
-import { env } from "./env";
+import { configSmtp, type ConfigSmtp } from "./definicoes";
 
+/**
+ * Transportador SMTP construído a partir das definições guardadas no painel
+ * (com reserva para as variáveis do .env). É recriado sempre que a
+ * configuração muda.
+ */
 let transportador: Transporter | null = null;
+let assinatura = "";
 
-function obterTransportador(): Transporter | null {
-  if (!env.smtp.host || !env.smtp.user) return null;
-  if (!transportador) {
-    transportador = nodemailer.createTransport({
-      host: env.smtp.host,
-      port: env.smtp.port,
-      secure: env.smtp.secure,
-      auth: { user: env.smtp.user, pass: env.smtp.pass },
-    });
-  }
-  return transportador;
+function assinar(cfg: ConfigSmtp): string {
+  return [cfg.host, cfg.port, cfg.secure, cfg.user, cfg.pass].join("|");
 }
 
-function escaparHtml(texto: string): string {
+async function obterTransportador(): Promise<{
+  transporte: Transporter | null;
+  cfg: ConfigSmtp;
+}> {
+  const cfg = await configSmtp();
+  if (!cfg.host || !cfg.user) return { transporte: null, cfg };
+
+  const nova = assinar(cfg);
+  if (!transportador || nova !== assinatura) {
+    transportador = nodemailer.createTransport({
+      host: cfg.host,
+      port: cfg.port,
+      secure: cfg.secure,
+      auth: { user: cfg.user, pass: cfg.pass },
+    });
+    assinatura = nova;
+  }
+  return { transporte: transportador, cfg };
+}
+
+export function reiniciarTransportador(): void {
+  transportador = null;
+  assinatura = "";
+}
+
+export function escaparHtml(texto: string): string {
   return texto
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+/** Verifica a ligação ao servidor SMTP e devolve o resultado. */
+export async function verificarSmtp(): Promise<{
+  ok: boolean;
+  configurado: boolean;
+  erro?: string;
+}> {
+  const { transporte } = await obterTransportador();
+  if (!transporte) return { ok: false, configurado: false };
+  try {
+    await transporte.verify();
+    return { ok: true, configurado: true };
+  } catch (erro) {
+    return {
+      ok: false,
+      configurado: true,
+      erro: erro instanceof Error ? erro.message : "Falha desconhecida",
+    };
+  }
+}
+
+/** Envia um email de teste para o endereço de destino configurado. */
+export async function enviarEmailTeste(
+  destino?: string,
+): Promise<{ ok: boolean; erro?: string }> {
+  const { transporte, cfg } = await obterTransportador();
+  if (!transporte) return { ok: false, erro: "SMTP não configurado" };
+  try {
+    await transporte.sendMail({
+      from: cfg.remetente,
+      to: destino || cfg.destino || cfg.user,
+      subject: "[AIDAM] Teste de configuração SMTP",
+      text: "Se recebeu esta mensagem, o envio de email do website AIDAM está a funcionar correctamente.",
+    });
+    return { ok: true };
+  } catch (erro) {
+    return {
+      ok: false,
+      erro: erro instanceof Error ? erro.message : "Falha desconhecida",
+    };
+  }
 }
 
 export type MensagemContacto = {
@@ -40,7 +104,7 @@ export type MensagemContacto = {
 export async function enviarEmailContacto(
   dados: MensagemContacto,
 ): Promise<boolean> {
-  const transporte = obterTransportador();
+  const { transporte, cfg } = await obterTransportador();
   if (!transporte) {
     console.warn("[email] SMTP não configurado — email não enviado.");
     return false;
@@ -48,8 +112,8 @@ export async function enviarEmailContacto(
 
   try {
     await transporte.sendMail({
-      from: env.emailRemetente,
-      to: env.emailDestino,
+      from: cfg.remetente,
+      to: cfg.destino || cfg.user,
       replyTo: dados.email,
       subject: `[Website AIDAM] ${dados.assunto}`,
       text: [

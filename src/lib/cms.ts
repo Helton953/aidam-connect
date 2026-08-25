@@ -2,7 +2,7 @@
  * Camada de acesso do painel de administração.
  *
  * - Se `VITE_API_URL` estiver definido, todas as operações são feitas contra a
- *   API REST própria (PHP + MySQL em aidam.co.mz) — ver `backend/`.
+ *   API REST própria (Node.js + Express + MySQL em aidam.co.mz) — ver `backend/`.
  * - Caso contrário, o painel funciona em modo local de demonstração
  *   (localStorage), permitindo validar o CMS antes de ligar o servidor.
  */
@@ -11,7 +11,11 @@ import { associados } from "@/data/associados";
 import { orgaosSociais } from "@/data/orgaos-sociais";
 import { organizacao, quemSomos, missaoVisaoValores } from "@/data/institucional";
 import type {
+  AdministradorCms,
   AssociadoCms,
+  DefinicoesCms,
+  EstadoServico,
+  FicheiroCms,
   InstitucionalCms,
   MembroCms,
   MensagemCms,
@@ -49,6 +53,8 @@ type Store = {
   orgaos: MembroCms[];
   institucional: InstitucionalCms[];
   mensagens: MensagemCms[];
+  definicoes: DefinicoesCms;
+  ficheiros: FicheiroCms[];
 };
 
 function novoId() {
@@ -102,6 +108,19 @@ function estadoInicial(): Store {
       { id: "i9", chave: "visao", rotulo: "Visão", valor: missaoVisaoValores.visao },
     ],
     mensagens: [],
+    definicoes: {
+      morada: organizacao.morada,
+      telefone: organizacao.telefone,
+      email: organizacao.email,
+      smtp_host: "",
+      smtp_port: "465",
+      smtp_secure: "true",
+      smtp_user: "",
+      smtp_pass: "",
+      email_destino: organizacao.email,
+      email_remetente: `Website AIDAM <${organizacao.email}>`,
+    },
+    ficheiros: [],
   };
 }
 
@@ -131,9 +150,11 @@ function gravarStore(store: Store) {
 
 export class ApiError extends Error {}
 
+const base = () => API_URL.replace(/\/$/, "");
+
 async function pedido<T>(caminho: string, init?: RequestInit): Promise<T> {
   const token = getToken();
-  const resposta = await fetch(`${API_URL.replace(/\/$/, "")}${caminho}`, {
+  const resposta = await fetch(`${base()}${caminho}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -161,6 +182,68 @@ async function pedido<T>(caminho: string, init?: RequestInit): Promise<T> {
 }
 
 /* ------------------------------------------------------------------ */
+/* Mapeamento entre a API (snake_case) e o painel (camelCase)          */
+/* ------------------------------------------------------------------ */
+
+type Bruto = Record<string, unknown>;
+
+const caminhos: Record<RecursoCms, string> = {
+  noticias: "/api/noticias",
+  associados: "/api/conteudos/associados",
+  orgaos: "/api/conteudos/orgaos",
+  institucional: "/api/conteudos/institucional",
+  mensagens: "/api/contacto",
+};
+
+function daApi(recurso: RecursoCms, linha: Bruto): Bruto {
+  const id = String(linha["id"] ?? "");
+  if (recurso === "noticias") {
+    return {
+      id,
+      slug: linha["slug"] ?? "",
+      titulo: linha["titulo"] ?? "",
+      data: String(linha["data"] ?? "").slice(0, 10),
+      categoria: linha["categoria"] ?? "Associação",
+      resumo: linha["resumo"] ?? "",
+      imagem: linha["imagem"] ?? "",
+      imagemAlt: linha["imagem_alt"] ?? "",
+      corpo: linha["corpo"] ?? "",
+      publicada: Boolean(Number(linha["publicada"] ?? 0)),
+    };
+  }
+  if (recurso === "mensagens") {
+    return {
+      id,
+      nome: linha["nome"] ?? "",
+      empresa: linha["empresa"] ?? "",
+      email: linha["email"] ?? "",
+      assunto: linha["assunto"] ?? "",
+      mensagem: linha["mensagem"] ?? "",
+      criadaEm: linha["criado_em"] ?? "",
+      lida: Boolean(Number(linha["lida"] ?? 0)),
+    };
+  }
+  return { ...linha, id };
+}
+
+function paraApi(recurso: RecursoCms, registo: Bruto): Bruto {
+  const { id: _id, ...resto } = registo;
+  if (recurso === "noticias") {
+    const saida: Bruto = { ...resto };
+    if ("imagemAlt" in saida) {
+      saida["imagem_alt"] = saida["imagemAlt"];
+      delete saida["imagemAlt"];
+    }
+    return saida;
+  }
+  if (recurso === "mensagens") {
+    // Apenas o estado de leitura é editável.
+    return "lida" in resto ? { lida: Boolean(resto["lida"]) } : {};
+  }
+  return resto;
+}
+
+/* ------------------------------------------------------------------ */
 /* Autenticação                                                        */
 /* ------------------------------------------------------------------ */
 
@@ -172,33 +255,35 @@ export async function entrar(email: string, palavraPasse: string): Promise<Utili
     setToken("demo");
     return { id: "demo", nome: "Administrador", email: UTILIZADOR_DEMO.email };
   }
-  const dados = await pedido<{ token: string; utilizador: UtilizadorCms }>("/auth/login", {
+  const dados = await pedido<{ token: string; admin: UtilizadorCms }>("/api/admin/login", {
     method: "POST",
-    body: JSON.stringify({ email, palavra_passe: palavraPasse }),
+    body: JSON.stringify({ email, password: palavraPasse }),
   });
   setToken(dados.token);
-  return dados.utilizador;
+  return dados.admin;
 }
 
 export async function sessaoActual(): Promise<UtilizadorCms | null> {
   if (!getToken()) return null;
   if (modoLocal) return { id: "demo", nome: "Administrador", email: UTILIZADOR_DEMO.email };
   try {
-    return await pedido<UtilizadorCms>("/auth/me");
+    const dados = await pedido<{ admin: { sub: string; nome: string; email: string } }>("/api/admin/me");
+    return { id: dados.admin.sub, nome: dados.admin.nome, email: dados.admin.email };
   } catch {
     return null;
   }
 }
 
 export async function sair(): Promise<void> {
-  if (!modoLocal) {
-    try {
-      await pedido<void>("/auth/logout", { method: "POST" });
-    } catch {
-      /* sessão já inválida */
-    }
-  }
   setToken(null);
+}
+
+export async function alterarPalavraPasse(actual: string, nova: string): Promise<void> {
+  if (modoLocal) throw new ApiError("Indisponível em modo de demonstração.");
+  await pedido<void>("/api/admin/password", {
+    method: "POST",
+    body: JSON.stringify({ actual, nova }),
+  });
 }
 
 /* ------------------------------------------------------------------ */
@@ -207,7 +292,9 @@ export async function sair(): Promise<void> {
 
 export async function listar<R extends RecursoCms>(recurso: R): Promise<RegistoPorRecurso[R][]> {
   if (modoLocal) return lerStore()[recurso] as RegistoPorRecurso[R][];
-  return pedido<RegistoPorRecurso[R][]>(`/${recurso}`);
+  const sufixo = recurso === "noticias" ? "?todas=1" : "";
+  const linhas = await pedido<Bruto[]>(`${caminhos[recurso]}${sufixo}`);
+  return linhas.map((l) => daApi(recurso, l)) as RegistoPorRecurso[R][];
 }
 
 export async function criar<R extends RecursoCms>(
@@ -221,7 +308,11 @@ export async function criar<R extends RecursoCms>(
     gravarStore(store);
     return novo;
   }
-  return pedido<RegistoPorRecurso[R]>(`/${recurso}`, { method: "POST", body: JSON.stringify(registo) });
+  const linha = await pedido<Bruto>(caminhos[recurso], {
+    method: "POST",
+    body: JSON.stringify(paraApi(recurso, registo as Bruto)),
+  });
+  return daApi(recurso, linha) as RegistoPorRecurso[R];
 }
 
 export async function actualizar<R extends RecursoCms>(
@@ -238,7 +329,11 @@ export async function actualizar<R extends RecursoCms>(
     gravarStore(store);
     return lista[indice] as RegistoPorRecurso[R];
   }
-  return pedido<RegistoPorRecurso[R]>(`/${recurso}/${id}`, { method: "PUT", body: JSON.stringify(registo) });
+  const linha = await pedido<Bruto>(`${caminhos[recurso]}/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(paraApi(recurso, registo as Bruto)),
+  });
+  return (linha ? daApi(recurso, linha) : ({ id, ...registo } as unknown)) as RegistoPorRecurso[R];
 }
 
 export async function remover(recurso: RecursoCms, id: string): Promise<void> {
@@ -248,7 +343,184 @@ export async function remover(recurso: RecursoCms, id: string): Promise<void> {
     gravarStore(store);
     return;
   }
-  await pedido<void>(`/${recurso}/${id}`, { method: "DELETE" });
+  await pedido<void>(`${caminhos[recurso]}/${id}`, { method: "DELETE" });
+}
+
+/* ------------------------------------------------------------------ */
+/* Carregamento de ficheiros (imagens a partir do dispositivo)         */
+/* ------------------------------------------------------------------ */
+
+const TAMANHO_MAXIMO = 5 * 1024 * 1024;
+
+function paraDataUrl(ficheiro: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const leitor = new FileReader();
+    leitor.onload = () => resolve(String(leitor.result));
+    leitor.onerror = () => reject(new ApiError("Não foi possível ler o ficheiro."));
+    leitor.readAsDataURL(ficheiro);
+  });
+}
+
+export async function carregarFicheiro(ficheiro: File): Promise<FicheiroCms> {
+  if (ficheiro.size > TAMANHO_MAXIMO) {
+    throw new ApiError("Ficheiro demasiado grande (máximo 5 MB).");
+  }
+
+  if (modoLocal) {
+    const store = lerStore();
+    const registo: FicheiroCms = {
+      id: novoId(),
+      nome: ficheiro.name,
+      nomeOriginal: ficheiro.name,
+      tipo: ficheiro.type,
+      tamanho: ficheiro.size,
+      url: await paraDataUrl(ficheiro),
+      criadoEm: new Date().toISOString(),
+    };
+    store.ficheiros.unshift(registo);
+    // Evita rebentar a quota do localStorage com muitas imagens grandes.
+    store.ficheiros = store.ficheiros.slice(0, 20);
+    gravarStore(store);
+    return registo;
+  }
+
+  const corpo = new FormData();
+  corpo.append("ficheiro", ficheiro);
+  const resposta = await fetch(`${base()}/api/uploads`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${getToken() ?? ""}` },
+    body: corpo,
+  });
+  if (!resposta.ok) {
+    let detalhe = "Não foi possível carregar o ficheiro.";
+    try {
+      const json = (await resposta.json()) as { erro?: string };
+      if (json.erro) detalhe = json.erro;
+    } catch {
+      /* sem JSON */
+    }
+    throw new ApiError(detalhe);
+  }
+  const dados = (await resposta.json()) as { url: string; nome: string; tamanho: number };
+  return {
+    id: dados.nome,
+    nome: dados.nome,
+    nomeOriginal: ficheiro.name,
+    tipo: ficheiro.type,
+    tamanho: dados.tamanho,
+    url: dados.url,
+    criadoEm: new Date().toISOString(),
+  };
+}
+
+export async function listarFicheiros(): Promise<FicheiroCms[]> {
+  if (modoLocal) return lerStore().ficheiros;
+  const linhas = await pedido<Bruto[]>("/api/uploads");
+  return linhas.map((l) => ({
+    id: String(l["id"]),
+    nome: String(l["nome"] ?? ""),
+    nomeOriginal: String(l["nome_original"] ?? ""),
+    tipo: String(l["tipo"] ?? ""),
+    tamanho: Number(l["tamanho"] ?? 0),
+    url: String(l["url"] ?? ""),
+    criadoEm: String(l["criado_em"] ?? ""),
+  }));
+}
+
+export async function removerFicheiro(id: string): Promise<void> {
+  if (modoLocal) {
+    const store = lerStore();
+    store.ficheiros = store.ficheiros.filter((f) => f.id !== id);
+    gravarStore(store);
+    return;
+  }
+  await pedido<void>(`/api/uploads/${id}`, { method: "DELETE" });
+}
+
+/* ------------------------------------------------------------------ */
+/* Definições da plataforma                                            */
+/* ------------------------------------------------------------------ */
+
+export async function lerDefinicoes(): Promise<DefinicoesCms> {
+  if (modoLocal) return lerStore().definicoes;
+  return pedido<DefinicoesCms>("/api/definicoes");
+}
+
+export async function gravarDefinicoes(valores: DefinicoesCms): Promise<DefinicoesCms> {
+  if (modoLocal) {
+    const store = lerStore();
+    store.definicoes = { ...store.definicoes, ...valores };
+    gravarStore(store);
+    return store.definicoes;
+  }
+  return pedido<DefinicoesCms>("/api/definicoes", { method: "PUT", body: JSON.stringify(valores) });
+}
+
+export async function verificarSmtp(): Promise<{ ok: boolean; configurado: boolean; erro?: string }> {
+  if (modoLocal) return { ok: false, configurado: false, erro: "Modo de demonstração." };
+  return pedido("/api/definicoes/smtp/verificar");
+}
+
+export async function enviarEmailTeste(destino?: string): Promise<{ ok: boolean; erro?: string }> {
+  if (modoLocal) return { ok: false, erro: "Modo de demonstração." };
+  return pedido("/api/definicoes/smtp/teste", {
+    method: "POST",
+    body: JSON.stringify(destino ? { destino } : {}),
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* Administradores e estado do serviço                                 */
+/* ------------------------------------------------------------------ */
+
+export async function listarAdministradores(): Promise<AdministradorCms[]> {
+  if (modoLocal) {
+    return [
+      { id: "demo", nome: "Administrador", email: UTILIZADOR_DEMO.email, activo: true, ultimoAcesso: null },
+    ];
+  }
+  const linhas = await pedido<Bruto[]>("/api/admin/utilizadores");
+  return linhas.map((l) => ({
+    id: String(l["id"]),
+    nome: String(l["nome"] ?? ""),
+    email: String(l["email"] ?? ""),
+    activo: Boolean(Number(l["activo"] ?? 0)),
+    ultimoAcesso: (l["ultimo_acesso"] as string | null) ?? null,
+  }));
+}
+
+export async function criarAdministrador(dados: {
+  nome: string;
+  email: string;
+  password: string;
+}): Promise<void> {
+  if (modoLocal) throw new ApiError("Indisponível em modo de demonstração.");
+  await pedido<void>("/api/admin/utilizadores", { method: "POST", body: JSON.stringify(dados) });
+}
+
+export async function actualizarAdministrador(
+  id: string,
+  dados: { nome?: string; activo?: boolean; password?: string },
+): Promise<void> {
+  if (modoLocal) throw new ApiError("Indisponível em modo de demonstração.");
+  await pedido<void>(`/api/admin/utilizadores/${id}`, { method: "PUT", body: JSON.stringify(dados) });
+}
+
+export async function removerAdministrador(id: string): Promise<void> {
+  if (modoLocal) throw new ApiError("Indisponível em modo de demonstração.");
+  await pedido<void>(`/api/admin/utilizadores/${id}`, { method: "DELETE" });
+}
+
+export async function estadoServico(): Promise<EstadoServico> {
+  if (modoLocal) {
+    return { ok: false, erro: "Modo de demonstração: sem ligação à API." };
+  }
+  try {
+    const resposta = await fetch(`${base()}/api/health`);
+    return (await resposta.json()) as EstadoServico;
+  } catch (erro) {
+    return { ok: false, erro: erro instanceof Error ? erro.message : "Serviço inacessível." };
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -262,7 +534,7 @@ export async function enviarMensagem(dados: Omit<MensagemCms, "id" | "criadaEm" 
     gravarStore(store);
     return;
   }
-  const resposta = await fetch(`${API_URL.replace(/\/$/, "")}/mensagens`, {
+  const resposta = await fetch(`${base()}/api/contacto`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dados),
@@ -279,4 +551,17 @@ export function gerarSlug(titulo: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export type { RecursoCms, RegistoPorRecurso, AssociadoCms, InstitucionalCms, MembroCms, MensagemCms, NoticiaCms, UtilizadorCms };
+export type {
+  RecursoCms,
+  RegistoPorRecurso,
+  AdministradorCms,
+  AssociadoCms,
+  DefinicoesCms,
+  EstadoServico,
+  FicheiroCms,
+  InstitucionalCms,
+  MembroCms,
+  MensagemCms,
+  NoticiaCms,
+  UtilizadorCms,
+};

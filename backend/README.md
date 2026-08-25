@@ -100,3 +100,28 @@ curl -X POST https://api.aidam.co.mz/api/noticias \
 ## Ligar o frontend
 
 No frontend, definir `VITE_API_URL=https://api.aidam.co.mz/api` e reconstruir o site.
+
+## Endpoints adicionais
+
+| Método | Rota | Acesso | Descrição |
+| --- | --- | --- | --- |
+| GET | `/api/health` (ou `/api/saude`) | Público | Estado do serviço: processo, MySQL (com latência), SMTP, uptime e memória. Devolve 503 se a base de dados falhar. |
+| GET/POST/PUT/DELETE | `/api/conteudos/associados` | Leitura pública / escrita protegida | Portfólio de associados. |
+| GET/POST/PUT/DELETE | `/api/conteudos/orgaos` | Leitura pública / escrita protegida | Membros dos órgãos sociais. |
+| GET/POST/PUT/DELETE | `/api/conteudos/institucional` | Leitura pública / escrita protegida | Blocos de texto institucionais. |
+| GET | `/api/definicoes/publicas` | Público | Definições visíveis no website (contactos, redes sociais…). |
+| GET/PUT | `/api/definicoes` | Protegido | Todas as definições, incluindo SMTP (palavra-passe mascarada). |
+| GET | `/api/definicoes/smtp/verificar` | Protegido | Testa a ligação ao servidor SMTP. |
+| POST | `/api/definicoes/smtp/teste` | Protegido | Envia um email de teste. |
+| POST/GET/DELETE | `/api/uploads` | Protegido | Carregamento de imagens/PDF (campo `ficheiro`, máx. 5 MB) e biblioteca. |
+| GET/POST/PUT/DELETE | `/api/admin/utilizadores` | Protegido | Gestão de contas de administrador. |
+| GET | `/api/admin/estatisticas` | Protegido | Contadores usados no painel. |
+
+Os ficheiros carregados são gravados em `backend/uploads/` e servidos em `/uploads/<ficheiro>`.
+Defina `URL_PUBLICA` no `.env` para que os endereços gerados apontem para o domínio correcto.
+
+Verificação rápida após o deploy:
+
+```bash
+curl -s https://api.aidam.co.mz/api/health | jq
+```

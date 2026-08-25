@@ -14,8 +14,13 @@ const campos: Campo<AssociadoCms>[] = [
     rotulo: "Categorias",
     ajuda: "Separadas por vírgula, entre: ligeiros, agricolas, industrial",
   },
-  { nome: "website", rotulo: "Website", largura: "meia" },
-  { nome: "logotipo", rotulo: "Logótipo (URL)", largura: "meia" },
+  { nome: "website", rotulo: "Website", tipo: "url", largura: "meia" },
+  {
+    nome: "logotipo",
+    rotulo: "Logótipo",
+    tipo: "imagem",
+    ajuda: "Carregue o logótipo a partir do dispositivo (PNG com fundo transparente de preferência).",
+  },
   { nome: "descricao", rotulo: "Descrição", tipo: "area" },
   { nome: "ordem", rotulo: "Ordem", tipo: "numero", largura: "meia" },
 ];
@@ -28,7 +33,7 @@ function AdminAssociados() {
       descricao="Empresas associadas apresentadas na página de Portfólio."
       rotuloNovo="Novo associado"
       campos={campos}
-      colunas={["nome", "marcas", "categorias", "ordem"]}
+      colunas={["logotipo", "nome", "marcas", "categorias", "ordem"]}
       vazio={{
         nome: "",
         marcas: "",
