@@ -70,3 +70,35 @@ export type RegistoPorRecurso = {
   institucional: InstitucionalCms;
   mensagens: MensagemCms;
 };
+
+export type FicheiroCms = {
+  id: string;
+  nome: string;
+  nomeOriginal: string;
+  tipo: string;
+  tamanho: number;
+  url: string;
+  criadoEm: string;
+};
+
+export type AdministradorCms = {
+  id: string;
+  nome: string;
+  email: string;
+  activo: boolean;
+  ultimoAcesso: string | null;
+};
+
+export type DefinicoesCms = Record<string, string>;
+
+export type EstadoServico = {
+  ok: boolean;
+  servico?: string;
+  node?: string;
+  uptimeSegundos?: number;
+  memoriaMb?: number;
+  baseDados?: { ok: boolean; latenciaMs?: number; erro?: string };
+  smtp?: { configurado: boolean };
+  horaServidor?: string;
+  erro?: string;
+};

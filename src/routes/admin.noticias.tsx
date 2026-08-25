@@ -18,7 +18,12 @@ const campos: Campo<NoticiaCms>[] = [
     largura: "meia",
   },
   { nome: "resumo", rotulo: "Resumo", tipo: "area", obrigatorio: true },
-  { nome: "imagem", rotulo: "Imagem (URL)", ajuda: "Endereço da imagem de destaque." },
+  {
+    nome: "imagem",
+    rotulo: "Imagem de destaque",
+    tipo: "imagem",
+    ajuda: "Carregue a imagem a partir do seu computador ou telemóvel (JPG, PNG ou WEBP, até 5 MB).",
+  },
   { nome: "imagemAlt", rotulo: "Texto alternativo da imagem" },
   { nome: "corpo", rotulo: "Corpo do artigo", tipo: "area", ajuda: "Separe os parágrafos com uma linha em branco." },
   { nome: "publicada", rotulo: "Publicada", tipo: "booleano", largura: "meia" },
