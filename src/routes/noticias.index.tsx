@@ -172,6 +172,12 @@ function NoticiasPage() {
           />
         </Reveal>
 
+        {semDados ? (
+          <p className="mt-12 rounded-xl border border-border bg-card p-8 text-sm font-light text-graphite">
+            Os indicadores de mercado ainda não estão disponíveis. Serão publicados assim que os reportes dos associados
+            forem consolidados.
+          </p>
+        ) : null}
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
           <Reveal>
             <Grafico titulo="Total Industry Volume (unidades/ano)">

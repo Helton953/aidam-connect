@@ -185,6 +185,11 @@ function SobrePage() {
         <Reveal>
           <SectionHeading eyebrow="Órgãos Sociais" titulo="Composição institucional" />
         </Reveal>
+        {orgaosSociais.length === 0 ? (
+          <p className="mt-12 rounded-xl border border-border bg-card p-8 text-sm font-light text-graphite">
+            A composição dos órgãos sociais será divulgada em breve.
+          </p>
+        ) : null}
         <div className="mt-12 space-y-14">
           {orgaosSociais.map((orgao) => (
             <div key={orgao.id}>
