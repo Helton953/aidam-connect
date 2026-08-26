@@ -197,6 +197,11 @@ function Index() {
             </Link>
           </Reveal>
         </div>
+        {ultimas.length === 0 ? (
+          <p className="mt-12 rounded-xl border border-border bg-card p-8 text-sm font-light text-graphite">
+            Ainda não existem notícias publicadas. Volte em breve para acompanhar a actualidade da Associação.
+          </p>
+        ) : null}
         <div className="mt-12 grid gap-8 md:grid-cols-3">
           {ultimas.map((n, i) => (
             <Reveal key={n.slug} delay={i * 90}>
