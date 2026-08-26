@@ -89,7 +89,5 @@ export const historia = [
 
 export const indicadores = [
   { valor: "2011", rotulo: "Ano de fundação", nota: "Reconhecida pelo Ministério da Justiça" },
-  { valor: "8", rotulo: "Empresas associadas", nota: "Grupos de referência no mercado nacional" },
-  { valor: "25+", rotulo: "Marcas representadas", nota: "Ligeiros, pesados, agrícolas e industriais" },
   { valor: "3", rotulo: "Segmentos de actuação", nota: "Automóvel, agrícola e industrial" },
 ];

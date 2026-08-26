@@ -49,6 +49,11 @@ function NoticiasPage() {
   const mercado = getMercado();
   const [pesquisa, setPesquisa] = useState("");
   const [pagina, setPagina] = useState(1);
+  const semDados =
+    mercado.tivAnual.length === 0 &&
+    mercado.evolucaoMensal.length === 0 &&
+    mercado.quotasMercado.length === 0 &&
+    mercado.segmentacao.length === 0;
 
   const filtradas = useMemo(() => {
     const termo = pesquisa.trim().toLowerCase();
@@ -172,7 +177,13 @@ function NoticiasPage() {
           />
         </Reveal>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+        {semDados ? (
+          <p className="mt-12 rounded-xl border border-border bg-card p-8 text-sm font-light text-graphite">
+            Os indicadores de mercado ainda não estão disponíveis. Serão publicados assim que os reportes dos associados
+            forem consolidados.
+          </p>
+        ) : null}
+        <div className={cn("mt-12 grid gap-6 lg:grid-cols-2", semDados && "hidden")}>
           <Reveal>
             <Grafico titulo="Total Industry Volume (unidades/ano)">
               <BarChart data={mercado.tivAnual}>
