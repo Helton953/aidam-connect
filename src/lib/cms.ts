@@ -6,9 +6,6 @@
  * - Caso contrário, o painel funciona em modo local de demonstração
  *   (localStorage), permitindo validar o CMS antes de ligar o servidor.
  */
-import { noticias } from "@/data/noticias";
-import { associados } from "@/data/associados";
-import { orgaosSociais } from "@/data/orgaos-sociais";
 import { organizacao, quemSomos, missaoVisaoValores } from "@/data/institucional";
 import type {
   AdministradorCms,
