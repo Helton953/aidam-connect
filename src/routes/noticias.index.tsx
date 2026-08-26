@@ -183,7 +183,7 @@ function NoticiasPage() {
             forem consolidados.
           </p>
         ) : null}
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+        <div className={cn("mt-12 grid gap-6 lg:grid-cols-2", semDados && "hidden")}>
           <Reveal>
             <Grafico titulo="Total Industry Volume (unidades/ano)">
               <BarChart data={mercado.tivAnual}>
