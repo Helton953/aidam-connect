@@ -49,6 +49,11 @@ function NoticiasPage() {
   const mercado = getMercado();
   const [pesquisa, setPesquisa] = useState("");
   const [pagina, setPagina] = useState(1);
+  const semDados =
+    mercado.tivAnual.length === 0 &&
+    mercado.evolucaoMensal.length === 0 &&
+    mercado.quotasMercado.length === 0 &&
+    mercado.segmentacao.length === 0;
 
   const filtradas = useMemo(() => {
     const termo = pesquisa.trim().toLowerCase();
