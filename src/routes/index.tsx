@@ -61,36 +61,18 @@ function Index() {
 
   return (
     <>
-      {/* Hero com fundo institucional fixo */}
+      {/* Hero */}
       <section className="relative isolate overflow-hidden border-b border-border">
-        <div
+        <img
+          src={heroImg}
+          alt=""
           aria-hidden="true"
-          className="hero-fixo absolute inset-0 opacity-20"
-          style={{ backgroundImage: `url(${heroImg})` }}
+          width={1920}
+          height={1080}
+          className="absolute inset-0 h-full w-full object-cover opacity-15"
         />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background"
-        />
-        {/* Faixa de luz que atravessa o fundo */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="hero-brilho absolute inset-y-0 -left-1/3 w-1/3 skew-x-12 bg-gradient-to-r from-transparent via-primary/10 to-transparent" />
-          <div className="hero-pulsar absolute -right-24 top-1/4 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
-        </div>
-        {/* Silhueta de automóvel em movimento contínuo */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-6 overflow-hidden">
-          <svg
-            viewBox="0 0 120 32"
-            className="hero-passagem h-10 w-32 text-primary/25"
-            fill="currentColor"
-          >
-            <path d="M6 22c0-2 1.6-3.6 3.6-3.6h1.1c.6-3 3.2-5.2 6.4-5.2s5.8 2.2 6.4 5.2h62c.6-3 3.2-5.2 6.4-5.2s5.8 2.2 6.4 5.2h1.1c2 0 3.6 1.6 3.6 3.6H6z" />
-            <path d="M14 13.4 22 6h34l10 7.4H14z" opacity="0.7" />
-            <circle cx="17.1" cy="22.4" r="4.4" />
-            <circle cx="91.9" cy="22.4" r="4.4" />
-          </svg>
-        </div>
-        <div className="relative mx-auto max-w-7xl px-6 py-28 lg:px-10 lg:py-36">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
+        <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
           <Reveal>
             <Logo size="lg" />
           </Reveal>
