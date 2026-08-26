@@ -60,39 +60,9 @@ function novoId() {
 
 function estadoInicial(): Store {
   return {
-    noticias: noticias.map((n, i) => ({
-      id: `n${i + 1}`,
-      slug: n.slug,
-      titulo: n.titulo,
-      data: n.data,
-      categoria: n.categoria,
-      resumo: n.resumo,
-      imagem: typeof n.imagem === "string" ? n.imagem : "",
-      imagemAlt: n.imagemAlt,
-      corpo: n.corpo.join("\n\n"),
-      publicada: true,
-    })),
-    associados: associados.map((a, i) => ({
-      id: a.id,
-      nome: a.nome,
-      marcas: a.marcas.join(", "),
-      categorias: a.categorias.join(","),
-      website: a.website,
-      descricao: a.descricao,
-      logotipo: a.logotipo ?? "",
-      ordem: i + 1,
-    })),
-    orgaos: orgaosSociais.flatMap((o) =>
-      o.membros.map((m, i) => ({
-        id: novoId(),
-        orgao: o.nome,
-        cargo: m.cargo,
-        nome: m.nome,
-        empresa: m.empresa,
-        linkedin: m.linkedin ?? "",
-        ordem: i + 1,
-      })),
-    ),
+    noticias: [],
+    associados: [],
+    orgaos: [],
     institucional: [
       { id: "i1", chave: "posicionamento", rotulo: "Frase de posicionamento", valor: organizacao.posicionamento },
       { id: "i2", chave: "morada", rotulo: "Morada", valor: organizacao.morada },
