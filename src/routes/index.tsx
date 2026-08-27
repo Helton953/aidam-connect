@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Car, Tractor, Factory, Wrench, Scale, BarChart3, Target, Eye, Gem } from "lucide-react";
+import { ArrowRight, Car, Tractor, Factory, Wrench, Scale, BarChart3, Target, Eye, Gem, ChevronDown } from "lucide-react";
 import heroImg from "@/assets/hero-aidam.jpg";
+import { FundoHeroAnimado } from "@/components/site/FundoHeroAnimado";
 import { Logo } from "@/components/site/Logo";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionHeading } from "@/components/site/Section";
@@ -61,18 +62,16 @@ function Index() {
 
   return (
     <>
-      {/* Hero */}
+      {/* Hero — fundo institucional animado, imagem fixa ao scroll */}
       <section className="relative isolate overflow-hidden border-b border-border">
-        <img
-          src={heroImg}
-          alt=""
+        <div
           aria-hidden="true"
-          width={1920}
-          height={1080}
-          className="absolute inset-0 h-full w-full object-cover opacity-15"
+          className="fundo-hero-fixo absolute inset-0 opacity-15"
+          style={{ backgroundImage: `url(${heroImg})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
-        <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+        <FundoHeroAnimado />
+        <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-36">
           <Reveal>
             <Logo size="lg" />
           </Reveal>
@@ -101,6 +100,12 @@ function Index() {
               >
                 Contactar
               </Link>
+            </div>
+          </Reveal>
+          <Reveal delay={340}>
+            <div className="mt-16 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-steel">
+              <ChevronDown className="fundo-hero-indicador h-4 w-4 text-primary" aria-hidden="true" />
+              <span>Descer para explorar</span>
             </div>
           </Reveal>
         </div>
