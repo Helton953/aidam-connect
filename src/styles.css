@@ -190,14 +190,6 @@
     }
   }
 
-  .fundo-hero-estrada {
-    animation: fundo-hero-estrada 3.2s linear infinite;
-  }
-
-  .fundo-hero-carro {
-    animation: fundo-hero-carro 7s ease-in-out infinite alternate;
-  }
-
   .fundo-hero-indicador {
     animation: fundo-hero-indicador 2.2s ease-in-out infinite;
   }
@@ -209,29 +201,9 @@
       transition: none;
     }
 
-    .fundo-hero-estrada,
-    .fundo-hero-carro,
     .fundo-hero-indicador {
       animation: none;
     }
-  }
-}
-
-@keyframes fundo-hero-estrada {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes fundo-hero-carro {
-  from {
-    transform: translateY(-62%) translateX(0);
-  }
-  to {
-    transform: translateY(-62%) translateX(-2.5rem);
   }
 }
 

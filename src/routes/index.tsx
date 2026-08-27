@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Car, Tractor, Factory, Wrench, Scale, BarChart3, Target, Eye, Gem, ChevronDown } from "lucide-react";
-import heroImg from "@/assets/hero-aidam.jpg";
+import heroImg from "@/assets/hero-frota.jpg";
 import { FundoHeroAnimado } from "@/components/site/FundoHeroAnimado";
 import { Logo } from "@/components/site/Logo";
 import { Reveal } from "@/components/site/Reveal";
