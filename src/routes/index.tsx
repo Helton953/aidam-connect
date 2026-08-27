@@ -70,8 +70,8 @@ function Index() {
           style={{ backgroundImage: `url(${heroImg})` }}
         />
         {/* Véu claro que garante a leitura do texto sobre a fotografia */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/75 to-background/20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background" />
         <FundoHeroAnimado />
         <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-36">
           <Reveal>
