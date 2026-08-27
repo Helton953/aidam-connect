@@ -6,6 +6,7 @@ import { PageHero, Section } from "@/components/site/Section";
 import { Reveal } from "@/components/site/Reveal";
 import { organizacao } from "@/data/institucional";
 import { enviarMensagem } from "@/lib/cms";
+import heroContactos from "@/assets/hero-contactos.jpg";
 
 export const Route = createFileRoute("/contactos")({
   component: ContactosPage,
@@ -89,6 +90,7 @@ function ContactosPage() {
         eyebrow="Contactos"
         titulo="Fale com a AIDAM"
         descricao="Para pedidos de informação, adesão à Associação ou contactos institucionais e de imprensa."
+        imagem={heroContactos}
       />
 
       <Section>

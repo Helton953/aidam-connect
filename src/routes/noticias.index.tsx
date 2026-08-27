@@ -17,6 +17,7 @@ import {
   Legend,
 } from "recharts";
 import { PageHero, Section, SectionHeading } from "@/components/site/Section";
+import heroNoticias from "@/assets/hero-noticias.jpg";
 import { Reveal } from "@/components/site/Reveal";
 import { getNoticias, formatarData, getMercado } from "@/lib/content";
 import { cn } from "@/lib/utils";
@@ -76,6 +77,7 @@ function NoticiasPage() {
         eyebrow="Notícias"
         titulo="Actualidade da Associação e do sector automóvel"
         descricao="Comunicados institucionais, análises do mercado, eventos e estudos sobre a evolução do sector em Moçambique."
+        imagem={heroNoticias}
       />
 
       <Section>

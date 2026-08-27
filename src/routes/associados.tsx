@@ -6,6 +6,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { getAssociados, getCategoriasAssociado } from "@/lib/content";
 import type { CategoriaAssociado } from "@/data/associados";
 import { cn } from "@/lib/utils";
+import heroAssociados from "@/assets/hero-associados.jpg";
 
 export const Route = createFileRoute("/associados")({
   component: AssociadosPage,
@@ -42,6 +43,7 @@ function AssociadosPage() {
         eyebrow="Portfólio"
         titulo="Associados e marcas representadas"
         descricao="As empresas que integram a AIDAM representam algumas das principais marcas mundiais de automóveis, máquinas agrícolas e equipamento industrial no mercado moçambicano."
+        imagem={heroAssociados}
       />
 
       <Section>

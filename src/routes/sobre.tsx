@@ -12,6 +12,7 @@ import {
   iniciativas,
 } from "@/data/institucional";
 import { orgaosSociais } from "@/data/orgaos-sociais";
+import heroSobre from "@/assets/hero-sobre.jpg";
 
 const icones = { Car, Tractor, Factory, Wrench, Scale, BarChart3 } as const;
 
@@ -41,6 +42,7 @@ function SobrePage() {
         eyebrow="Sobre Nós"
         titulo="Uma associação que representa e valoriza o sector automóvel moçambicano"
         descricao={quemSomos.resumo}
+        imagem={heroSobre}
       />
 
       <Section>
