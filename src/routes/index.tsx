@@ -61,18 +61,16 @@ function Index() {
 
   return (
     <>
-      {/* Hero */}
+      {/* Hero — fundo institucional animado, imagem fixa ao scroll */}
       <section className="relative isolate overflow-hidden border-b border-border">
-        <img
-          src={heroImg}
-          alt=""
+        <div
           aria-hidden="true"
-          width={1920}
-          height={1080}
-          className="absolute inset-0 h-full w-full object-cover opacity-15"
+          className="fundo-hero-fixo absolute inset-0 opacity-15"
+          style={{ backgroundImage: `url(${heroImg})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
-        <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+        <FundoHeroAnimado />
+        <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-36">
           <Reveal>
             <Logo size="lg" />
           </Reveal>
