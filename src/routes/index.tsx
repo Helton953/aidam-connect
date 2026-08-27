@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Car, Tractor, Factory, Wrench, Scale, BarChart3, Target, Eye, Gem } from "lucide-react";
+import { ArrowRight, Car, Tractor, Factory, Wrench, Scale, BarChart3, Target, Eye, Gem, ChevronDown } from "lucide-react";
 import heroImg from "@/assets/hero-aidam.jpg";
+import { FundoHeroAnimado } from "@/components/site/FundoHeroAnimado";
 import { Logo } from "@/components/site/Logo";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionHeading } from "@/components/site/Section";
@@ -99,6 +100,12 @@ function Index() {
               >
                 Contactar
               </Link>
+            </div>
+          </Reveal>
+          <Reveal delay={340}>
+            <div className="mt-16 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-steel">
+              <ChevronDown className="fundo-hero-indicador h-4 w-4 text-primary" aria-hidden="true" />
+              <span>Descer para explorar</span>
             </div>
           </Reveal>
         </div>
