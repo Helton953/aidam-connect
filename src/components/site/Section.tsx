@@ -75,22 +75,28 @@ export function PageHero({
         style={{ backgroundImage: `url(${imagem})` }}
         aria-hidden="true"
       />
-      {/* Sobreposição centrada para legibilidade */}
-      <div className="absolute inset-0 bg-ink/55" aria-hidden="true" />
+      {/* Véu escuro global — garante contraste do texto branco */}
+      <div className="absolute inset-0 bg-ink/65" aria-hidden="true" />
+      {/* Vignette: escurece o centro onde está o texto, deixa bordas visíveis */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-ink/40 via-transparent to-background"
+        className="absolute inset-0 bg-[radial-gradient(circle_at_center,_oklch(0.21_0_0_/_0.55)_0%,_transparent_75%)]"
+        aria-hidden="true"
+      />
+      {/* Gradientes de transição para o conteúdo seguinte */}
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-ink/50 via-transparent to-background"
         aria-hidden="true"
       />
       <div className="relative mx-auto flex min-h-[420px] max-w-7xl flex-col items-center justify-center px-6 py-24 text-center lg:px-10 lg:py-32">
-        <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-white/90">
+        <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-white/90 hero-text-glow">
           <span className="mr-2 inline-block h-px w-8 bg-primary align-middle" aria-hidden="true" />
           <span className="text-primary">{eyebrow}</span>
           <span className="ml-2 inline-block h-px w-8 bg-primary align-middle" aria-hidden="true" />
         </p>
-        <h1 className="max-w-4xl text-4xl font-extrabold leading-tight text-white sm:text-5xl">
+        <h1 className="max-w-4xl text-4xl font-extrabold leading-tight text-white sm:text-5xl hero-text-glow">
           {titulo}
         </h1>
-        <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-white/85">{descricao}</p>
+        <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-white/90 hero-text-glow">{descricao}</p>
       </div>
     </div>
   );
