@@ -75,16 +75,16 @@ export function PageHero({
         style={{ backgroundImage: `url(${imagem})` }}
         aria-hidden="true"
       />
-      {/* Véu escuro global — garante contraste do texto branco */}
-      <div className="absolute inset-0 bg-ink/65" aria-hidden="true" />
-      {/* Vignette: escurece o centro onde está o texto, deixa bordas visíveis */}
+      {/* Véu escuro moderado — equilíbrio entre legibilidade e visibilidade da imagem */}
+      <div className="absolute inset-0 bg-ink/50" aria-hidden="true" />
+      {/* Vignette suave: reforça o contraste no centro onde está o texto */}
       <div
-        className="absolute inset-0 bg-[radial-gradient(circle_at_center,_oklch(0.21_0_0_/_0.55)_0%,_transparent_75%)]"
+        className="absolute inset-0 bg-[radial-gradient(circle_at_center,_oklch(0.21_0_0_/_0.42)_0%,_transparent_70%)]"
         aria-hidden="true"
       />
       {/* Gradientes de transição para o conteúdo seguinte */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-ink/50 via-transparent to-background"
+        className="absolute inset-0 bg-gradient-to-b from-ink/35 via-transparent to-background"
         aria-hidden="true"
       />
       <div className="relative mx-auto flex min-h-[420px] max-w-7xl flex-col items-center justify-center px-6 py-24 text-center lg:px-10 lg:py-32">
