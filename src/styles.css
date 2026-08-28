@@ -194,6 +194,11 @@
     animation: fundo-hero-indicador 2.2s ease-in-out infinite;
   }
 
+  /* Sombra sutil no texto dos heros para reforçar legibilidade */
+  .hero-text-glow {
+    text-shadow: 0 2px 18px oklch(0.21 0 0 / 0.45);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal {
       opacity: 1;
