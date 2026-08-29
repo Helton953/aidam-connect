@@ -213,7 +213,17 @@
     backdrop-filter: blur(3px) saturate(105%);
   }
 
-  @media (max-width: 767px) {
+  /* Painel de leitura do hero da home: só desfoca em ecrãs pequenos */
+  .hero-painel {
+    backdrop-filter: blur(6px) saturate(105%);
+  }
+
+  @media (min-width: 768px) {
+    .hero-painel {
+      backdrop-filter: none;
+    }
+  }
+
     /* Ecrãs pequenos: mais desfoque, menos véu opaco — mantém a foto visível */
     .hero-desfoque {
       backdrop-filter: blur(6px) saturate(105%);
