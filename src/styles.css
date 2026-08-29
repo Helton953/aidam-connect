@@ -224,11 +224,13 @@
     }
   }
 
+  @media (max-width: 767px) {
     /* Ecrãs pequenos: mais desfoque, menos véu opaco — mantém a foto visível */
     .hero-desfoque {
       backdrop-filter: blur(6px) saturate(105%);
     }
   }
+
 
   /* Modos de alto contraste / preferência por mais contraste */
   @media (prefers-contrast: more) {
