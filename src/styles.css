@@ -244,9 +244,11 @@
   }
 
   @media (forced-colors: active) {
-    .hero-desfoque {
+    .hero-desfoque,
+    .hero-painel {
       backdrop-filter: none;
     }
+
 
     .hero-text-glow,
     .hero-text-glow-claro {
