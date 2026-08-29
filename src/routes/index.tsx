@@ -79,19 +79,22 @@ function Index() {
 
         <FundoHeroAnimado />
         <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-36">
-          <Reveal>
-            <Logo size="lg" />
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="mt-10 max-w-4xl text-4xl leading-[1.1] sm:text-5xl lg:text-6xl hero-text-glow-claro">
-              A voz institucional do sector automóvel em Moçambique
-            </h1>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-graphite hero-text-glow-claro">
-              {organizacao.posicionamento}
-            </p>
-          </Reveal>
+          <div className="hero-painel -mx-3 rounded-2xl bg-background/70 px-3 py-6 md:mx-0 md:bg-transparent md:px-0 md:py-0">
+            <Reveal>
+              <Logo size="lg" />
+            </Reveal>
+            <Reveal delay={80}>
+              <h1 className="mt-10 max-w-4xl text-4xl leading-[1.1] sm:text-5xl lg:text-6xl hero-text-glow-claro">
+                A voz institucional do sector automóvel em Moçambique
+              </h1>
+            </Reveal>
+            <Reveal delay={160}>
+              <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-graphite hero-text-glow-claro">
+                {organizacao.posicionamento}
+              </p>
+            </Reveal>
+          </div>
+
 
           <Reveal delay={240}>
             <div className="mt-10 flex flex-wrap gap-4">
