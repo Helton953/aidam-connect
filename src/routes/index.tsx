@@ -70,6 +70,7 @@ function Index() {
           style={{ backgroundImage: `url(${heroImg})` }}
         />
         {/* Véu claro que garante a leitura do texto sobre a fotografia */}
+        <div className="hero-veu-claro absolute inset-0 bg-background/70 md:bg-transparent" aria-hidden="true" />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_50%,_oklch(1_0_0_/_0.32)_0%,_transparent_60%)]" aria-hidden="true" />
@@ -80,15 +81,16 @@ function Index() {
             <Logo size="lg" />
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="mt-10 max-w-4xl text-4xl leading-[1.1] sm:text-5xl lg:text-6xl">
+            <h1 className="mt-10 max-w-4xl text-4xl leading-[1.1] sm:text-5xl lg:text-6xl hero-text-glow-claro">
               A voz institucional do sector automóvel em Moçambique
             </h1>
           </Reveal>
           <Reveal delay={160}>
-            <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-graphite">
+            <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-graphite hero-text-glow-claro">
               {organizacao.posicionamento}
             </p>
           </Reveal>
+
           <Reveal delay={240}>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
