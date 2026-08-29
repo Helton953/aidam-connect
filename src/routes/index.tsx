@@ -70,7 +70,8 @@ function Index() {
           style={{ backgroundImage: `url(${heroImg})` }}
         />
         {/* Véu claro que garante a leitura do texto sobre a fotografia */}
-        <div className="hero-veu-claro absolute inset-0 bg-background/45 md:bg-transparent" aria-hidden="true" />
+        <div className="hero-desfoque absolute inset-0 bg-background/60 md:hidden" aria-hidden="true" />
+        <div className="hero-veu-claro absolute inset-0 hidden md:block md:bg-transparent" aria-hidden="true" />
         <div className="absolute inset-0 md:bg-gradient-to-r md:from-background md:via-background/80 md:to-background/40" aria-hidden="true" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" aria-hidden="true" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_50%,_oklch(1_0_0_/_0.22)_0%,_transparent_60%)] md:bg-[radial-gradient(circle_at_35%_50%,_oklch(1_0_0_/_0.32)_0%,_transparent_60%)]" aria-hidden="true" />
