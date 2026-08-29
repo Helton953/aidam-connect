@@ -194,10 +194,68 @@
     animation: fundo-hero-indicador 2.2s ease-in-out infinite;
   }
 
-  /* Sombra sutil no texto dos heros para reforçar legibilidade */
+  /* Sombra no texto claro dos heros (fotografia escura por baixo) */
   .hero-text-glow {
-    text-shadow: 0 2px 18px oklch(0.21 0 0 / 0.45);
+    text-shadow:
+      0 1px 2px oklch(0.21 0 0 / 0.6),
+      0 2px 18px oklch(0.21 0 0 / 0.5);
   }
+
+  /* Sombra no texto escuro do hero da home (véu claro por baixo) */
+  .hero-text-glow-claro {
+    text-shadow:
+      0 1px 2px oklch(1 0 0 / 0.9),
+      0 2px 16px oklch(1 0 0 / 0.75);
+  }
+
+  /* Desfoque muito leve da fotografia atrás do bloco de texto */
+  .hero-desfoque {
+    backdrop-filter: blur(3px) saturate(105%);
+  }
+
+  /* Painel de leitura do hero da home: só desfoca em ecrãs pequenos */
+  .hero-painel {
+    backdrop-filter: blur(6px) saturate(105%);
+  }
+
+  @media (min-width: 768px) {
+    .hero-painel {
+      backdrop-filter: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    /* Ecrãs pequenos: mais desfoque, menos véu opaco — mantém a foto visível */
+    .hero-desfoque {
+      backdrop-filter: blur(6px) saturate(105%);
+    }
+  }
+
+
+  /* Modos de alto contraste / preferência por mais contraste */
+  @media (prefers-contrast: more) {
+    .hero-veu-escuro {
+      background-color: oklch(0.21 0 0 / 0.72);
+    }
+
+    .hero-veu-claro {
+      background-color: oklch(1 0 0 / 0.82);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .hero-desfoque,
+    .hero-painel {
+      backdrop-filter: none;
+    }
+
+
+    .hero-text-glow,
+    .hero-text-glow-claro {
+      text-shadow: none;
+    }
+  }
+
 
   @media (prefers-reduced-motion: reduce) {
     .reveal {

@@ -70,25 +70,32 @@ function Index() {
           style={{ backgroundImage: `url(${heroImg})` }}
         />
         {/* Véu claro que garante a leitura do texto sobre a fotografia */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_50%,_oklch(1_0_0_/_0.32)_0%,_transparent_60%)]" aria-hidden="true" />
+        <div className="hero-veu-claro absolute inset-0 bg-background/40 md:bg-transparent" aria-hidden="true" />
+        <div className="absolute inset-0 md:bg-gradient-to-r md:from-background md:via-background/80 md:to-background/40" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_50%,_oklch(1_0_0_/_0.22)_0%,_transparent_60%)] md:bg-[radial-gradient(circle_at_35%_50%,_oklch(1_0_0_/_0.32)_0%,_transparent_60%)]" aria-hidden="true" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_55%,_oklch(0.21_0_0_/_0.22)_0%,_transparent_55%)]" aria-hidden="true" />
+
+
         <FundoHeroAnimado />
         <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-36">
-          <Reveal>
-            <Logo size="lg" />
-          </Reveal>
-          <Reveal delay={80}>
-            <h1 className="mt-10 max-w-4xl text-4xl leading-[1.1] sm:text-5xl lg:text-6xl">
-              A voz institucional do sector automóvel em Moçambique
-            </h1>
-          </Reveal>
-          <Reveal delay={160}>
-            <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-graphite">
-              {organizacao.posicionamento}
-            </p>
-          </Reveal>
+          <div className="hero-painel -mx-3 rounded-2xl bg-background/70 px-3 py-6 md:mx-0 md:bg-transparent md:px-0 md:py-0">
+            <Reveal>
+              <Logo size="lg" />
+            </Reveal>
+            <Reveal delay={80}>
+              <h1 className="mt-10 max-w-4xl text-4xl leading-[1.1] sm:text-5xl lg:text-6xl hero-text-glow-claro">
+                A voz institucional do sector automóvel em Moçambique
+              </h1>
+            </Reveal>
+            <Reveal delay={160}>
+              <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-graphite hero-text-glow-claro">
+                {organizacao.posicionamento}
+              </p>
+            </Reveal>
+          </div>
+
+
           <Reveal delay={240}>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
