@@ -76,7 +76,7 @@ function Index() {
         <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-36">
           <div>
             <Reveal>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary sm:text-sm">
+              <p className="inline-block rounded-md bg-primary px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-primary-foreground sm:text-xs">
                 AIDAM — Associação de Importação e Distribuição Automóvel de Moçambique
               </p>
             </Reveal>
