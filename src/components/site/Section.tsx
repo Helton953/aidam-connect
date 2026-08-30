@@ -98,9 +98,7 @@ export function PageHero({
           <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-white">{descricao}</p>
         </div>
       </div>
-
-      </div>
-
     </div>
+
   );
 }
