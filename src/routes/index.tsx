@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Car, Tractor, Factory, Wrench, Scale, BarChart3, Target, Eye, Gem, ChevronDown } from "lucide-react";
 import heroImg from "@/assets/hero-frota.jpg";
 import { FundoHeroAnimado } from "@/components/site/FundoHeroAnimado";
-import { Logo } from "@/components/site/Logo";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionHeading } from "@/components/site/Section";
 import { getUltimasNoticias, formatarData } from "@/lib/content";
@@ -113,7 +112,7 @@ function Index() {
             </div>
           </Reveal>
           <Reveal delay={340}>
-            <div className="mt-16 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-steel">
+            <div className="mt-16 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-white/80">
               <ChevronDown className="fundo-hero-indicador h-4 w-4 text-primary" aria-hidden="true" />
               <span>Descer para explorar</span>
             </div>

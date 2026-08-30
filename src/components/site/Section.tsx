@@ -76,7 +76,7 @@ export function PageHero({
         aria-hidden="true"
       />
       {/* Véu escuro: garante rácio WCAG AA sem esconder a fotografia */}
-      <div className="hero-veu-escuro absolute inset-0 bg-ink/65 md:bg-ink/55" aria-hidden="true" />
+      <div className="absolute inset-0 bg-ink/75 md:bg-ink/65" aria-hidden="true" />
       {/* Vignette suave: reforça o contraste no centro onde está o texto */}
       <div
         className="absolute inset-0 bg-[radial-gradient(circle_at_center,_oklch(0.21_0_0_/_0.45)_0%,_transparent_70%)]"
@@ -88,7 +88,7 @@ export function PageHero({
         aria-hidden="true"
       />
       <div className="relative mx-auto flex min-h-[420px] max-w-7xl flex-col items-center justify-center px-6 py-24 text-center lg:px-10 lg:py-32">
-        <div className="hero-desfoque rounded-2xl bg-ink/40 px-6 py-8 sm:px-10 sm:py-10">
+        <div className="rounded-2xl px-6 py-8 sm:px-10 sm:py-10">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-white">
             <span className="mr-2 inline-block h-px w-8 bg-primary align-middle" aria-hidden="true" />
             <span className="text-primary">{eyebrow}</span>
