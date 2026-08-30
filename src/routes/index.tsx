@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Car, Tractor, Factory, Wrench, Scale, BarChart3, Target, Eye, Gem, ChevronDown } from "lucide-react";
 import heroImg from "@/assets/hero-frota.jpg";
 import { FundoHeroAnimado } from "@/components/site/FundoHeroAnimado";
-import { Logo } from "@/components/site/Logo";
 import { Reveal } from "@/components/site/Reveal";
 import { Section, SectionHeading } from "@/components/site/Section";
 import { getUltimasNoticias, formatarData } from "@/lib/content";
@@ -69,26 +68,25 @@ function Index() {
           className="fundo-hero-fixo absolute inset-0"
           style={{ backgroundImage: `url(${heroImg})` }}
         />
-        {/* Véu claro que garante a leitura do texto sobre a fotografia */}
-        <div className="hero-veu-claro absolute inset-0 bg-background/50 md:bg-transparent" aria-hidden="true" />
-        <div className="absolute inset-0 md:bg-gradient-to-r md:from-background md:via-background/85 md:to-background/40" aria-hidden="true" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" aria-hidden="true" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_35%_50%,_oklch(1_0_0_/_0.28)_0%,_transparent_60%)] md:bg-[radial-gradient(circle_at_35%_50%,_oklch(1_0_0_/_0.38)_0%,_transparent_60%)]" aria-hidden="true" />
-
+        {/* Véu escuro que garante a leitura do texto sobre a fotografia */}
+        <div className="absolute inset-0 bg-ink/70 md:bg-ink/60" aria-hidden="true" />
+        <div className="absolute inset-0 md:bg-gradient-to-r md:from-ink/80 md:via-ink/60 md:to-ink/35" aria-hidden="true" />
 
         <FundoHeroAnimado />
         <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-36">
-          <div className="hero-painel -mx-3 rounded-2xl bg-background/85 px-3 py-6 md:mx-0 md:bg-transparent md:px-0 md:py-0">
+          <div>
             <Reveal>
-              <Logo size="lg" />
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary sm:text-sm">
+                AIDAM — Associação de Importação e Distribuição Automóvel de Moçambique
+              </p>
             </Reveal>
             <Reveal delay={80}>
-              <h1 className="mt-10 max-w-4xl text-4xl leading-[1.1] sm:text-5xl lg:text-6xl">
+              <h1 className="mt-8 max-w-4xl text-4xl leading-[1.1] text-white sm:text-5xl lg:text-6xl">
                 A voz institucional do sector automóvel em Moçambique
               </h1>
             </Reveal>
             <Reveal delay={160}>
-              <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-graphite">
+              <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-white/90">
                 {organizacao.posicionamento}
               </p>
             </Reveal>
@@ -114,7 +112,7 @@ function Index() {
             </div>
           </Reveal>
           <Reveal delay={340}>
-            <div className="mt-16 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-steel">
+            <div className="mt-16 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-white/80">
               <ChevronDown className="fundo-hero-indicador h-4 w-4 text-primary" aria-hidden="true" />
               <span>Descer para explorar</span>
             </div>
