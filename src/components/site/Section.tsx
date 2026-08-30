@@ -75,11 +75,11 @@ export function PageHero({
         style={{ backgroundImage: `url(${imagem})` }}
         aria-hidden="true"
       />
-      {/* Véu escuro moderado — reforçado em ecrãs pequenos (sem fixed attachment) */}
-      <div className="hero-veu-escuro absolute inset-0 bg-ink/60 md:bg-ink/50" aria-hidden="true" />
+      {/* Véu escuro: garante rácio WCAG AA sem esconder a fotografia */}
+      <div className="hero-veu-escuro absolute inset-0 bg-ink/65 md:bg-ink/55" aria-hidden="true" />
       {/* Vignette suave: reforça o contraste no centro onde está o texto */}
       <div
-        className="absolute inset-0 bg-[radial-gradient(circle_at_center,_oklch(0.21_0_0_/_0.42)_0%,_transparent_70%)]"
+        className="absolute inset-0 bg-[radial-gradient(circle_at_center,_oklch(0.21_0_0_/_0.45)_0%,_transparent_70%)]"
         aria-hidden="true"
       />
       {/* Gradientes de transição para o conteúdo seguinte */}
@@ -88,19 +88,17 @@ export function PageHero({
         aria-hidden="true"
       />
       <div className="relative mx-auto flex min-h-[420px] max-w-7xl flex-col items-center justify-center px-6 py-24 text-center lg:px-10 lg:py-32">
-        <div className="hero-desfoque rounded-2xl bg-ink/25 px-6 py-8 sm:px-10 sm:py-10">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-white hero-text-glow">
+        <div className="hero-desfoque rounded-2xl bg-ink/40 px-6 py-8 sm:px-10 sm:py-10">
+          <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-white">
             <span className="mr-2 inline-block h-px w-8 bg-primary align-middle" aria-hidden="true" />
             <span className="text-primary">{eyebrow}</span>
             <span className="ml-2 inline-block h-px w-8 bg-primary align-middle" aria-hidden="true" />
           </p>
-          <h1 className="max-w-4xl text-4xl font-extrabold leading-tight text-white sm:text-5xl hero-text-glow">
-            {titulo}
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-white hero-text-glow">{descricao}</p>
+          <h1 className="max-w-4xl text-4xl font-extrabold leading-tight text-white sm:text-5xl">{titulo}</h1>
+          <p className="mt-6 max-w-2xl text-lg font-light leading-relaxed text-white">{descricao}</p>
         </div>
       </div>
-
     </div>
+
   );
 }
